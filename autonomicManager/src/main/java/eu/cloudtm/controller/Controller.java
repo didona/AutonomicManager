@@ -8,7 +8,6 @@ import eu.cloudtm.controller.exceptions.OutputFilterException;
 import eu.cloudtm.controller.model.PlatformConfiguration;
 import eu.cloudtm.controller.model.PlatformTuning;
 import eu.cloudtm.controller.model.State;
-import eu.cloudtm.controller.model.Tuning;
 import eu.cloudtm.controller.model.utils.InstanceConfig;
 import eu.cloudtm.controller.model.utils.PlatformState;
 import eu.cloudtm.controller.model.utils.ReplicationProtocol;
@@ -16,11 +15,9 @@ import eu.cloudtm.controller.model.utils.TuningState;
 import eu.cloudtm.stats.Sample;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -177,7 +174,7 @@ public class Controller implements SampleListener {
     public void updateScale(int _size, InstanceConfig _instanceConf, Tuning tuning){
         if( state.isRunning() ){
 
-            if( !scaleTuning.equals(tuning) )
+            if( !platformTuning.scaleTuning.equals(tuning) )
                 scaleTuning.set(tuning.getForecaster());
 
             if(scaleTuning.getState() == TuningState.MANUAL)
@@ -243,7 +240,7 @@ public class Controller implements SampleListener {
             },
             "replication_protocol":{
                 "protocol":"TWOPC",
-                "forecaster":"NONE"
+                "forecaster":"MANUAL"
             },
             "replication_degree":{
                 "degree":2,

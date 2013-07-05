@@ -12,6 +12,10 @@
     <artifactId>autonomicManager</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <jersey-version>2.0</jersey-version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -28,11 +32,14 @@
             <!--<systemPath>${basedir}/lib/WPMConnector.jar</systemPath>-->
         </dependency>
 
+
+        <!--
         <dependency>
             <groupId>net.sourceforge.collections</groupId>
             <artifactId>collections-generic</artifactId>
             <version>4.01</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>com.googlecode.efficient-java-matrix-library</groupId>
@@ -77,8 +84,39 @@
             <artifactId>httpclient</artifactId>
             <version>4.2.3</version>
         </dependency>
+
+
+        <!--
+            NEW VERSION OF JERSEY + GRIZZLY (WITH INJECTION)
+        -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <!-- <scope>test</scope> -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+        </dependency>
+        <!--
+            END
+        -->
+
+
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.glassfish.jersey</groupId>
+                <artifactId>jersey-bom</artifactId>
+                <version>${jersey-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

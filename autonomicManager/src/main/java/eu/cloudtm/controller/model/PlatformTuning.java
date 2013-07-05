@@ -1,8 +1,7 @@
 package eu.cloudtm.controller.model;
 
 import com.google.gson.Gson;
-import eu.cloudtm.controller.model.utils.InstanceConfig;
-import eu.cloudtm.controller.model.utils.ReplicationProtocol;
+import eu.cloudtm.controller.model.utils.Forecaster;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -15,14 +14,40 @@ public class PlatformTuning {
 
     private static Log log = LogFactory.getLog(PlatformTuning.class);
 
-    private Tuning scaleTuning = new Tuning();
+    private volatile Forecaster scaleForecaster = Forecaster.ANALYTICAL;
 
-    private Tuning repProtocolTuning = new Tuning();
+    private volatile Forecaster protocolForecaster = Forecaster.ANALYTICAL;
 
-    private Tuning repDegreeTuning = new Tuning();
+    private volatile Forecaster degreeForecaster = Forecaster.ANALYTICAL;
 
-    private Boolean dataPlacement = true;
 
+    public PlatformTuning(){
+
+    }
+
+    public Forecaster getScaleForecaster(){
+        return scaleForecaster;
+    }
+
+    public void setScaleForecaster(Forecaster forecaster){
+        scaleForecaster = forecaster;
+    }
+
+    public Forecaster getProtocolForecaster(){
+        return protocolForecaster;
+    }
+
+    public void setProtocolForecaster(Forecaster forecaster){
+        protocolForecaster = forecaster;
+    }
+
+    public Forecaster getDegreeForecaster(){
+        return degreeForecaster;
+    }
+
+    public void setDegreeForecaster(Forecaster forecaster){
+        degreeForecaster = forecaster;
+    }
 
     public PlatformTuning toJSON() {
         log.info("TO IMPLEMENT");

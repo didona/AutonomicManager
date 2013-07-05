@@ -6,16 +6,15 @@ package eu.cloudtm.controller.model.utils;
  * Date: 5/30/13
  */
 public enum Forecaster {
-    NONE("none"),ANALYTICAL("analytical"),SIMULATOR("simulator"),MACHINELEARNING("machine learning");
+    MANUAL(false), ANALYTICAL(true), SIMULATOR(true), MACHINE_LEARNING(true);
 
-    private final String text;
+    private final boolean autoScaling;
 
-    private Forecaster(final String text) {
-        this.text = text;
+    private Forecaster(final boolean autoScaling) {
+        this.autoScaling = autoScaling;
     }
 
-    @Override
-    public String toString() {
-        return text;
+    public boolean isAutoScaling(){
+        return autoScaling;
     }
 }

@@ -26,7 +26,7 @@ public class ScaleResource extends AbstractResource {
     @Consumes("application/x-www-form-urlencoded")
     @Produces("application/json")
     public synchronized Response setScale(
-            @DefaultValue("NONE") @FormParam("scale_forecasting") Forecaster forecaster,
+            @DefaultValue("MANUAL") @FormParam("scale_forecasting") Forecaster forecaster,
             @DefaultValue("-1") @FormParam("scale_size") int size,
             @FormParam("instance_type") InstanceConfig instanceType
     ) {

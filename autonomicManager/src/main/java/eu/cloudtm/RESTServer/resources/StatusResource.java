@@ -1,16 +1,16 @@
 package eu.cloudtm.RESTServer.resources;
 
 import com.google.gson.Gson;
-import com.sun.jersey.spi.resource.Singleton;
 import eu.cloudtm.controller.Controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 
-@Singleton
+//@Singleton
 @Path("/status")
 public class StatusResource extends AbstractResource {
 
@@ -18,6 +18,8 @@ public class StatusResource extends AbstractResource {
 
     private Gson gson = new Gson();
 
+    @Inject
+    private Controller controller;
 /*
 {
    "state":"WORKING",
@@ -28,7 +30,7 @@ public class StatusResource extends AbstractResource {
    },
    "replication_protocol":{
       "protocol":"TWOPC",
-      "forecaster":"NONE"
+      "forecaster":"MANUAL"
    },
    "replication_degree":{
       "degree":2,
@@ -40,7 +42,7 @@ public class StatusResource extends AbstractResource {
     @GET
     @Produces("application/json")
     public Response getState() {
-        String json = Controller.getInstance().getJSONState();
+        String json = controller.getJSONState();
 
         Response.ResponseBuilder builder = Response.ok(json);
         return makeCORS(builder);
