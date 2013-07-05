@@ -1,14 +1,12 @@
 package eu.cloudtm.controller;
 
 import eu.cloudtm.StatsManager;
-import eu.cloudtm.stats.Sample;
+import eu.cloudtm.stats.WPMSample;
 import eu.cloudtm.wpm.parser.ResourceType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by: Fabio Perfetti
@@ -41,7 +39,7 @@ public class InputFilter {
     }
 
     public boolean doFilter(){
-        List<Sample> lastNSamples = statsManager.getLastNSample( Controller.SAMPLE_WINDOW );
+        List<WPMSample> lastNSamples = statsManager.getLastNSample( Controller.SAMPLE_WINDOW );
         boolean reconfigure;
 
         boolean arrivalRateResponse = evaluateArrivalRate(lastNSamples);
@@ -53,9 +51,9 @@ public class InputFilter {
         return reconfigure;
     }
 
-    private boolean evaluateAbortRate(List<Sample> lastNSamples){
+    private boolean evaluateAbortRate(List<WPMSample> lastNSamples){
         double abortSum = 0.0;
-        for (Sample sample : lastNSamples){
+        for (WPMSample sample : lastNSamples){
             abortSum += (1 - StatsManager.getAvgAttribute("CommitProbability", sample, ResourceType.JMX));
         }
         double currentAbortAvg =  abortSum / ((double) lastNSamples.size());
@@ -82,13 +80,13 @@ public class InputFilter {
         return false;
     }
 
-    private boolean evaluateResponseTime(List<Sample> lastNSamples){
+    private boolean evaluateResponseTime(List<WPMSample> lastNSamples){
         return false;
     }
 
-    private boolean evaluateArrivalRate(List<Sample> lastNSamples){
+    private boolean evaluateArrivalRate(List<WPMSample> lastNSamples){
         double throughputSum = 0.0;
-        for (Sample sample : lastNSamples){
+        for (WPMSample sample : lastNSamples){
             throughputSum += StatsManager.getAvgAttribute("Throughput", sample, ResourceType.JMX);
         }
         double currentThroughputAvg =  throughputSum / ((double) lastNSamples.size());

@@ -4,14 +4,12 @@ import Tas2.core.ModelResult;
 import Tas2.core.Tas2;
 import Tas2.core.environment.DSTMScenarioTas2;
 import Tas2.exception.Tas2Exception;
-import eu.cloudtm.common.dto.WhatIfCustomParamDTO;
 import eu.cloudtm.controller.Controller;
 import eu.cloudtm.controller.exceptions.OracleException;
 import eu.cloudtm.controller.model.KPI;
 import eu.cloudtm.controller.model.PlatformConfiguration;
 import eu.cloudtm.controller.model.utils.InstanceConfig;
 import eu.cloudtm.controller.model.utils.ReplicationProtocol;
-import eu.cloudtm.stats.Sample;
 import eu.cloudtm.controller.oracles.common.DSTMScenarioFactory;
 import eu.cloudtm.controller.oracles.common.PublishAttributeException;
 
@@ -36,8 +34,9 @@ public class OracleTAS extends AbstractOracle {
         super(_controller);
     }
 
+
     @Override
-    public KPI forecast(Sample sample, int numNodes, int numThreads) throws OracleException {
+    public KPI forecast(OracleInput sample, int numNodes, int numThreads) throws OracleException {
         DSTMScenarioTas2 scenario;
 
         try {
@@ -55,30 +54,6 @@ public class OracleTAS extends AbstractOracle {
         }
     }
 
-    @Override
-    public KPI forecastWithCustomParam(Sample sample, WhatIfCustomParamDTO customParam, int numNodes, int numThreads) throws OracleException {
-        DSTMScenarioTas2 scenario = null;
-
-        try {
-            scenario = DSTMScenarioFactory.buildCustomScenario(sample.getJmx(),
-                    sample.getMem(),
-                    customParam,
-                    numNodes,
-                    numThreads,
-                    Controller.TIME_WINDOW);
-
-        } catch (PublishAttributeException e) {
-            throw new RuntimeException(e);
-        } catch (Tas2Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
-            return realForecast(scenario,numNodes, numThreads);
-        } catch (Tas2Exception e) {
-            throw new OracleException(e);
-        }
-    }
 
     private KPI realForecast(DSTMScenarioTas2 scenario, int numNodes, int numThreads) throws Tas2Exception {
         ModelResult result;

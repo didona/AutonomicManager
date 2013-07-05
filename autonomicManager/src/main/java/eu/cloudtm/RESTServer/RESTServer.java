@@ -31,13 +31,14 @@ public class RESTServer {
 
     public static RESTServer getInstance(Controller _controller, StatsManager _statsManager){
 
-        Binder binder new RESTBinder();
-
+        Binder binder = new RESTBinder(_controller, _statsManager);
+        RESTServer restServer = new RESTServer(binder);
+        return restServer;
 
     }
 
-    private RESTServer(RESTBinder binder){
-
+    private RESTServer(Binder _binder){
+        binder = _binder;
     }
 
 

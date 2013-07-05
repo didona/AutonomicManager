@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ public class ACF {
 
     private static Log log = LogFactory.getLog(ACF.class);
 
-    private static double getLocalAbortProb(HashMap<String, PublishAttribute> JMXvalues) throws PublishAttributeException {
+    private static double getLocalAbortProb(Map<String, PublishAttribute<Double>> JMXvalues) throws PublishAttributeException {
         double puts = StatsManager.getAvgAttribute("NumPuts", JMXvalues);
         log.trace("Attempted put " + puts);
         double okPuts = StatsManager.getAvgAttribute("PaoloLocalTakenLocks", JMXvalues);
@@ -29,7 +30,7 @@ public class ACF {
         return 0;
     }
 
-    public static double evaluate(HashMap<String, PublishAttribute> JMXvalues, double threads, double timeWindow) throws PublishAttributeException {
+    public static double evaluate(Map<String, PublishAttribute<Double>> JMXvalues, double threads, double timeWindow) throws PublishAttributeException {
 
         double otherThreads = threads - 1.0D;
         double pCont = getLocalAbortProb(JMXvalues);
@@ -54,7 +55,7 @@ public class ACF {
         return pCont / (lm);
     }
 
-    private static double pLocalHoldTime(HashMap<String, PublishAttribute> JMXvalues) throws PublishAttributeException {
+    private static double pLocalHoldTime(Map<String, PublishAttribute<Double>> JMXvalues) throws PublishAttributeException {
         double pLocalHoldTime = StatsManager.getAvgAttribute("PaoloLocalTakenHoldTime", JMXvalues);
         double pLocalLocks = StatsManager.getAvgAttribute("PaoloLocalTakenLocks", JMXvalues);
         if (pLocalLocks == 0)
@@ -62,7 +63,7 @@ public class ACF {
         return pLocalHoldTime / pLocalLocks;
     }
 
-    private static double pRemoteHoldTime(HashMap<String, PublishAttribute> JMXvalues) throws PublishAttributeException {
+    private static double pRemoteHoldTime(Map<String, PublishAttribute<Double>> JMXvalues) throws PublishAttributeException {
         double pRemoteHoldTime = StatsManager.getAvgAttribute("PaoloRemoteTakenHoldTime", JMXvalues);
         double pRemoteLocks = StatsManager.getAvgAttribute("PaoloRemoteTakenLocks", JMXvalues);
         if (pRemoteLocks == 0)

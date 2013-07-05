@@ -2,7 +2,6 @@ package eu.cloudtm.RESTServer.resources;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.jersey.spi.resource.Singleton;
 import eu.cloudtm.StatsManager;
 import eu.cloudtm.controller.Controller;
 import eu.cloudtm.common.dto.StatisticDTO;
@@ -10,6 +9,7 @@ import eu.cloudtm.wpm.parser.ResourceType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.InvocationTargetException;

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="sj" uri="/struts-jquery-tags"%>
 <html>
 <head>
     <title><s:text name="MyCloud.message"/></title>
@@ -22,7 +23,18 @@
 	   	<!-- <h2 id="slogan"><span><s:property value="message"/></span></h2> -->
 	   				
       	<!--  <a href="${pageContext.request.contextPath}/registration.jsp">Register</a>  -->
-		
+			
+		<sj:accordion id="accordion" heightStyle="content" animate="true">
+        	<sj:accordionItem title="Node01: 172.31.0.22">
+                <sj:div id="divInAccrodionItem1" href="%{urlajax1}"/>
+        	</sj:accordionItem>
+        	
+        	<sj:accordionItem title="Node02: 172.31.0.23">
+                
+        	</sj:accordionItem>
+        	
+        	
+		</sj:accordion>
 
 	</div> <!-- /col-text -->
     

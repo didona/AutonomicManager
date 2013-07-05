@@ -1,6 +1,5 @@
 package eu.cloudtm.stats;
 
-import eu.cloudtm.StatsManager;
 import eu.cloudtm.common.SampleListener;
 import eu.cloudtm.wpm.logService.remote.events.*;
 import eu.cloudtm.wpm.logService.remote.listeners.WPMStatisticsRemoteListener;
@@ -68,7 +67,7 @@ public class WPMStatisticsRemoteListenerImpl implements WPMStatisticsRemoteListe
         //trace(jmx);
         //trace(mem);
 
-        //Sample newSample = Sample.getInstance(jmx,mem);
+        //WPMSample newSample = WPMSample.getInstance(jmx,mem);
         //notifyListeners(newSample);
     }
 
@@ -84,11 +83,11 @@ public class WPMStatisticsRemoteListenerImpl implements WPMStatisticsRemoteListe
         HashMap<String, PublishAttribute> mem = pm.getValues();
 
 
-        Sample newSample = Sample.getInstance(jmx,mem);
+        WPMSample newSample = WPMSample.getInstance(jmx, mem);
         notifyListeners(newSample);
     }
 
-    private void notifyListeners(Sample sample){
+    private void notifyListeners(WPMSample sample){
         for(SampleListener listener : listeners){
             listener.onNewSample(sample);
         }

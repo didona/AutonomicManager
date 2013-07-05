@@ -1,11 +1,9 @@
 package eu.cloudtm.controller.oracles;
 
-import eu.cloudtm.common.dto.WhatIfCustomParamDTO;
 import eu.cloudtm.controller.Controller;
 import eu.cloudtm.controller.IOracle;
 import eu.cloudtm.controller.exceptions.OracleException;
 import eu.cloudtm.controller.model.KPI;
-import eu.cloudtm.stats.Sample;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,7 +49,7 @@ public abstract class AbstractOracle implements IOracle {
     }
 
     @Override
-    public KPI minimizeCosts(Sample sample,
+    public KPI minimizeCosts(OracleInput sample,
                              double arrivalRateToGuarantee,
                              double abortRateToGuarantee,
                              double responseTimeToGuarantee)
@@ -61,7 +59,7 @@ public abstract class AbstractOracle implements IOracle {
         return kpi;
     }
 
-    private KPI binarySearch(Sample sample,
+    private KPI binarySearch(OracleInput sample,
                              double arrivalRateToGuarantee,
                              double abortRateToGuarantee,
                              double responseTimeToGuarantee)
@@ -127,23 +125,16 @@ public abstract class AbstractOracle implements IOracle {
     }
 
     @Override
-    public Set<KPI> whatIf(Sample sample, WhatIfCustomParamDTO customParam) throws OracleException {
+    public Set<KPI> whatIf(OracleInput input) throws OracleException {
         Set<KPI> ret = new TreeSet<KPI>();
 
         for(int i=imin;i<=imax;i++){
-            KPI kpi = forecastWithCustomParam(sample, customParam, i, controller.getCurrentConfiguration().threadPerNode() );
+            KPI kpi = forecast(input, i, controller.getCurrentConfiguration().threadPerNode() );
             if(kpi != null)
                 ret.add(kpi);
         }
 
         return ret;
-    }
-
-
-    @Override
-    public KPI maximizeThroughput(Sample sample) {
-        // TODO: logica di ricerca
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

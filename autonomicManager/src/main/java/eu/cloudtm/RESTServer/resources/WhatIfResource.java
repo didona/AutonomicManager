@@ -1,27 +1,20 @@
 package eu.cloudtm.RESTServer.resources;
 
 import com.google.gson.Gson;
-import com.sun.jersey.spi.resource.Singleton;
 import eu.cloudtm.StatsManager;
 import eu.cloudtm.common.dto.WhatIfCustomParamDTO;
-import eu.cloudtm.common.dto.WhatIfDTO;
 import eu.cloudtm.controller.Controller;
-import eu.cloudtm.controller.IOracle;
-import eu.cloudtm.controller.exceptions.OracleException;
+import eu.cloudtm.controller.WhatIf;
 import eu.cloudtm.controller.model.ACF;
-import eu.cloudtm.controller.model.KPI;
-import eu.cloudtm.controller.oracles.AbstractOracle;
 import eu.cloudtm.controller.oracles.common.PublishAttributeException;
-import eu.cloudtm.stats.Sample;
 import eu.cloudtm.wpm.parser.ResourceType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @Singleton
 @Path("/whatif")
@@ -29,28 +22,6 @@ public class WhatIfResource extends AbstractResource {
 
     private static Log log = LogFactory.getLog(WhatIfResource.class);
     private Gson gson = new Gson();
-
-    private Sample lastSample;
-
-    private Map<String,String> evaluatedParams = new HashMap<String,String>(){{
-        //put("ACF",                                  "-1"); //1
-        //put("GetWriteTx",                           "-1"); //4
-        //put("GetReadOnlyTx",                        "-1"); //5
-        //put("RemoteGetLatency",                     "-1"); //11
-
-    }};
-
-    private Map<String,ResourceType> sampledParams = new HashMap<String,ResourceType>(){{
-        put("LocalReadOnlyTxLocalServiceTime",      ResourceType.JMX);  //7   LocalReadOnlyTxLocalServiceTime
-        put("LocalUpdateTxLocalServiceTime",        ResourceType.JMX);  //6
-        put("RetryWritePercentage",                 ResourceType.JMX);  //2   RetryWritePercentage
-        put("SuxNumPuts",                           ResourceType.JMX);  //3   SuxNumPuts
-        put("PrepareCommandBytes",                  ResourceType.JMX);  //8   PrepareCommandBytes
-        put("RTT",                                  ResourceType.JMX);  //9   AvgSuccessfulPrepareTime
-        put("CommitBroadcastWallClockTime",         ResourceType.JMX);  //10  CommitBroadcastWallClockTime
-
-    }};
-
 
     @PUT
     @Consumes("application/x-www-form-urlencoded")
@@ -69,88 +40,41 @@ public class WhatIfResource extends AbstractResource {
             @DefaultValue("-1") @FormParam("RemoteGetLatency") double remoteGetLatency
     ){
 
-        if(lastSample==null)
-            lastSample = StatsManager.getInstance().getLastSample();
-
         WhatIfCustomParamDTO customParam = new WhatIfCustomParamDTO();
-        customParam.setACF( validateParam(acf) );
-        customParam.setCommitBroadcastWallClockTime( validateParam(commitBroadcastWallClockTime) );
-        customParam.setGetReadOnlyTx(validateParam(getReadOnlyTx));
-        customParam.setGetWriteTx(validateParam(getWriteTx));
-        customParam.setLocalReadOnlyTxLocalServiceTime(validateParam(localReadOnlyTxLocalServiceTime));
-        customParam.setLocalUpdateTxLocalServiceTime(validateParam(localUpdateTxLocalServiceTime));
-        customParam.setPrepareCommandBytes(validateParam(prepareCommandBytes));
-        customParam.setSuxNumPuts(validateParam(suxNumPuts));
-        customParam.setRemoteGetLatency(validateParam(remoteGetLatency));
-        customParam.setRetryWritePercentage(validateParam(retryWritePercentage));
-        customParam.setRTT( validateParam(rtt) );
+        customParam.setACF( acf );
+        customParam.setCommitBroadcastWallClockTime( commitBroadcastWallClockTime );
+        customParam.setGetReadOnlyTx( getReadOnlyTx );
+        customParam.setGetWriteTx( getWriteTx );
+        customParam.setLocalReadOnlyTxLocalServiceTime( localReadOnlyTxLocalServiceTime );
+        customParam.setLocalUpdateTxLocalServiceTime( localUpdateTxLocalServiceTime );
+        customParam.setPrepareCommandBytes( prepareCommandBytes );
+        customParam.setSuxNumPuts( suxNumPuts );
+        customParam.setRemoteGetLatency( remoteGetLatency );
+        customParam.setRetryWritePercentage( retryWritePercentage );
+        customParam.setRTT(  rtt );
 
-        Set<KPI> result = null;
-        for( String oracleName : Controller.getInstance().getOracles() ){
-            IOracle oracle = AbstractOracle.getInstance(oracleName, Controller.getInstance());
-            try {
-                result = oracle.whatIf(lastSample, customParam);
-            } catch (OracleException e) {
-                // da gestire, magari con segnalazione all'utente...
-                throw new RuntimeException(e);
-            }
-        }
-        lastSample = null;
+        WhatIf resource = new WhatIf(customParam);
 
-        WhatIfDTO whatIfResult = new WhatIfDTO();
-        for(KPI kpi:result){
-            whatIfResult.addThroughputPoint(kpi.getPlatformConfiguration().platformSize(),kpi.getThroughput());
-            whatIfResult.addResponseTimePoint(kpi.getPlatformConfiguration().platformSize(),kpi.getRtt());
-            whatIfResult.addAbortRatePoint(kpi.getPlatformConfiguration().platformSize(),kpi.getAbortProbability());
-        }
+
+        resource.whatIf( customParam );
+
+
+
         StringBuffer json = new StringBuffer();
-        json.append( gson.toJson(whatIfResult) );
+        json.append(  );
 
         log.info(json);
         Response.ResponseBuilder builder = Response.ok( json.toString() );
         return makeCORS(builder);
     }
 
-    private double validateParam(double val ){
-
-        double ret = val;
-        if( val < 0 ){
-            ret = -1;
-        }
-        log.info("valore ritornato --> " + ret);
-        return ret;
-    }
 
     @GET @Path("/values")
     @Produces("application/json")
     public synchronized Response updateValuesFromSystem() {
-        lastSample = StatsManager.getInstance().getLastSample();
 
-        StringBuffer json = new StringBuffer();
-
-        json.append("{ ");
-        for( Map.Entry<String,ResourceType> param : sampledParams.entrySet() ){
-            if (json.length() > 3) {
-                json.append(" , ");
-            }
-            json.append( getJSON(param.getKey(), String.valueOf(StatsManager.getInstance().getAvgAttribute(param.getKey(), lastSample, param.getValue())) ) );
-        }
-
-        if (json.length() > 3) {
-            json.append(" , ");
-        }
-
-        double acf;
-        try {
-            acf = ACF.evaluate(lastSample.getJmx(), Controller.getInstance().getCurrentConfiguration().threadPerNode(), Controller.TIME_WINDOW );
-            log.info("********************************** ACF = " + acf + " ***************************");
-        } catch (PublishAttributeException e) {
-            e.printStackTrace();
-            acf = -1;
-        }
-        json.append( getJSON("ACF", String.valueOf(acf) ) );
-
-        json.append(" }");
+        WhatIfCustomParamDTO customParam = WhatIf.retrieveCurrentParams();
+        String json = new Gson().toJson(customParam, WhatIfCustomParamDTO.class);
 
         Response.ResponseBuilder builder = Response.ok(json.toString());
         return makeCORS(builder);
@@ -166,3 +90,28 @@ public class WhatIfResource extends AbstractResource {
     }
 
 }
+
+
+//        json.append("{ ");
+//        for( Map.Entry<String,ResourceType> param : sampledParams.entrySet() ){
+//            if (json.length() > 3) {
+//                json.append(" , ");
+//            }
+//            json.append( getJSON(param.getKey(), String.valueOf(StatsManager.getInstance().getAvgAttribute(param.getKey(), lastSample, param.getValue())) ) );
+//        }
+//
+//        if (json.length() > 3) {
+//            json.append(" , ");
+//        }
+//
+//        double acf;
+//        try {
+//            acf = ACF.evaluate(lastSample.getJmx(), Controller.getInstance().getCurrentConfiguration().threadPerNode(), Controller.TIME_WINDOW );
+//            log.info("********************************** ACF = " + acf + " ***************************");
+//        } catch (PublishAttributeException e) {
+//            e.printStackTrace();
+//            acf = -1;
+//        }
+//        json.append( getJSON("ACF", String.valueOf(acf) ) );
+//
+//        json.append(" }");

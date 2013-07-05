@@ -19,6 +19,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.deltacloud.client</groupId>
             <artifactId>client</artifactId>
             <version>0.2.0-SNAPSHOT</version>
@@ -55,28 +61,25 @@
         </dependency>
         -->
 
+
+        <!--
         <dependency>
             <groupId>flanagan</groupId>
             <artifactId>flanagan</artifactId>
             <version>1.0.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/lib/flanagan-1.0.0.jar</systemPath>-->
         </dependency>
 
         <dependency>
             <groupId>jama</groupId>
             <artifactId>jama</artifactId>
             <version>1.0.2</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/lib/jama-1.0.2.jar</systemPath>-->
         </dependency>
+        -->
 
         <dependency>
             <groupId>eu.cloudtm</groupId>
             <artifactId>tas</artifactId>
             <version>2.0.0</version>
-            <!--<scope>system</scope>-->
-            <!--<systemPath>${basedir}/lib/tas-2.0.0.jar</systemPath>-->
         </dependency>
 
         <dependency>
@@ -89,11 +92,13 @@
         <!--
             NEW VERSION OF JERSEY + GRIZZLY (WITH INJECTION)
         -->
+
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-client</artifactId>
-            <!-- <scope>test</scope> -->
+            <version>2.0</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>

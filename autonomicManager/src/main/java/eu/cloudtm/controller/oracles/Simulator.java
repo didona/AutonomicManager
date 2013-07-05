@@ -3,7 +3,7 @@ package eu.cloudtm.controller.oracles;
 import eu.cloudtm.common.dto.WhatIfCustomParamDTO;
 import eu.cloudtm.controller.Controller;
 import eu.cloudtm.controller.model.KPI;
-import eu.cloudtm.stats.Sample;
+import eu.cloudtm.stats.WPMSample;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class Simulator extends AbstractOracle {
     }
 
     @Override
-    public KPI forecast(Sample sample, int numNodes, int numThreads) {
+    public KPI forecast(WPMSample sample, int numNodes, int numThreads) {
 
         ProcessBuilder pb = new ProcessBuilder(script, "");
         pb.directory(new File(directory));
@@ -54,7 +54,7 @@ public class Simulator extends AbstractOracle {
     }
 
     @Override
-    public KPI forecastWithCustomParam(Sample sample, WhatIfCustomParamDTO customParam, int numNodes, int numThreads) {
+    public KPI forecastWithCustomParam(WPMSample sample, WhatIfCustomParamDTO customParam, int numNodes, int numThreads) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

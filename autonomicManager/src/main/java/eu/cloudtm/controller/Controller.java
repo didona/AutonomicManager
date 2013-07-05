@@ -3,16 +3,12 @@ package eu.cloudtm.controller;
 import com.google.gson.Gson;
 import eu.cloudtm.StatsManager;
 import eu.cloudtm.common.SampleListener;
-import eu.cloudtm.controller.exceptions.ActuatorException;
 import eu.cloudtm.controller.exceptions.OutputFilterException;
 import eu.cloudtm.controller.model.PlatformConfiguration;
 import eu.cloudtm.controller.model.PlatformTuning;
 import eu.cloudtm.controller.model.State;
-import eu.cloudtm.controller.model.utils.InstanceConfig;
-import eu.cloudtm.controller.model.utils.PlatformState;
-import eu.cloudtm.controller.model.utils.ReplicationProtocol;
-import eu.cloudtm.controller.model.utils.TuningState;
-import eu.cloudtm.stats.Sample;
+import eu.cloudtm.controller.model.utils.*;
+import eu.cloudtm.stats.WPMSample;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.ArrayList;
@@ -99,7 +95,7 @@ public class Controller implements SampleListener {
     /* METHODS */
 
     @Override
-    public void onNewSample(Sample sample) {
+    public void onNewSample(WPMSample sample) {
         ControllerLogger.log.info("New sample stats received (" + sample.getId() + ")");
         if( !samplesCounter.compareAndSet(SAMPLE_WINDOW, 1) ){  // Num sample < SAMPLE_WINDOW
             samplesCounter.incrementAndGet();
@@ -171,51 +167,51 @@ public class Controller implements SampleListener {
 
     /* USER CONTROL */
 
-    public void updateScale(int _size, InstanceConfig _instanceConf, Tuning tuning){
-        if( state.isRunning() ){
-
-            if( !platformTuning.scaleTuning.equals(tuning) )
-                scaleTuning.set(tuning.getForecaster());
-
-            if(scaleTuning.getState() == TuningState.MANUAL)
-                platformConfiguration.setPlatformScale(_size, _instanceConf);
-
-            singleThreadExec.execute(new Runnable() {           // Analyzing
-                @Override
-                public void run() {
-                    onUserAction();
-                }
-            });
-        }
-    }
-
-    public void updateDegree(int _degree, Tuning tuning){
-
-        if( state.isRunning() ){
-            if(!repDegreeTuning.equals(tuning))
-                repDegreeTuning.set(tuning.getForecaster());
-
-            if(repDegreeTuning.getState()== TuningState.MANUAL)
-                platformConfiguration.setRepDegree(_degree);
-
-            onUserAction();
-        }
-
-    }
-
-    public void updateProtocol(ReplicationProtocol _protocol, Tuning tuning){
-
-        if( state.isRunning() ){
-            if(!repProtocolTuning.equals(tuning))
-                repProtocolTuning.set(tuning.getForecaster());
-
-            if(repProtocolTuning.getState()== TuningState.MANUAL)
-                platformConfiguration.setRepProtocol(_protocol);
-
-            onUserAction();
-        }
-
-    }
+//    public void updateScale(int _size, InstanceConfig _instanceConf, Tuning tuning){
+//        if( state.isRunning() ){
+//
+//            if( !platformTuning.scaleTuning.equals(tuning) )
+//                scaleTuning.set(tuning.getForecaster());
+//
+//            if(scaleTuning.getState() == TuningState.MANUAL)
+//                platformConfiguration.setPlatformScale(_size, _instanceConf);
+//
+//            singleThreadExec.execute(new Runnable() {           // Analyzing
+//                @Override
+//                public void run() {
+//                    onUserAction();
+//                }
+//            });
+//        }
+//    }
+//
+//    public void updateDegree(int _degree, Forecaster tuning){
+//
+//        if( state.isRunning() ){
+//            if(!repDegreeTuning.equals(tuning))
+//                repDegreeTuning.set(tuning.getForecaster());
+//
+//            if(repDegreeTuning.getState()== TuningState.MANUAL)
+//                platformConfiguration.setRepDegree(_degree);
+//
+//            onUserAction();
+//        }
+//
+//    }
+//
+//    public void updateProtocol(ReplicationProtocol _protocol, Tuning tuning){
+//
+//        if( state.isRunning() ){
+//            if(!repProtocolTuning.equals(tuning))
+//                repProtocolTuning.set(tuning.getForecaster());
+//
+//            if(repProtocolTuning.getState()== TuningState.MANUAL)
+//                platformConfiguration.setRepProtocol(_protocol);
+//
+//            onUserAction();
+//        }
+//
+//    }
 
     public PlatformState getState(){
         return state.current();
@@ -253,26 +249,26 @@ public class Controller implements SampleListener {
         Gson gson = new Gson();
         StringBuilder sb = new StringBuilder();
 
-        sb.append("{");
-        sb.append(gson.toJson("state") + ":" + gson.toJson(getState()) + "," );
-        sb.append(gson.toJson("scale") + ":" );
-        sb.append("{");
-            sb.append(gson.toJson("nodes") + ":" + platformConfiguration.platformSize() + ",");
-            sb.append(gson.toJson("configuration") + ":" + gson.toJson( platformConfiguration.nodeConfiguration() ) +  ",");
-            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( scaleTuning.getForecaster() ) );
-        sb.append("},");
-        sb.append(gson.toJson("replication_protocol") + ":");
-        sb.append("{");
-            sb.append(gson.toJson("protocol") + ":" + gson.toJson( platformConfiguration.replicationProtocol() ) + "," );
-            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( repProtocolTuning.getForecaster() ) );
-        sb.append("},");
-        sb.append(gson.toJson("replication_degree") + ":" );
-        sb.append("{");
-            sb.append(gson.toJson("degree") + ":" + platformConfiguration.replicationDegree() + "," );
-            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( repDegreeTuning.getForecaster() ) );
-        sb.append("},");
-        sb.append(gson.toJson("data_placement") + ":" + gson.toJson( (dataPlacement==true) ? "enabled" : "disabled") );
-        sb.append("}");
+//        sb.append("{");
+//        sb.append(gson.toJson("state") + ":" + gson.toJson(getState()) + "," );
+//        sb.append(gson.toJson("scale") + ":" );
+//        sb.append("{");
+//            sb.append(gson.toJson("nodes") + ":" + platformConfiguration.platformSize() + ",");
+//            sb.append(gson.toJson("configuration") + ":" + gson.toJson( platformConfiguration.nodeConfiguration() ) +  ",");
+//            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( scaleTuning.getForecaster() ) );
+//        sb.append("},");
+//        sb.append(gson.toJson("replication_protocol") + ":");
+//        sb.append("{");
+//            sb.append(gson.toJson("protocol") + ":" + gson.toJson( platformConfiguration.replicationProtocol() ) + "," );
+//            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( repProtocolTuning.getForecaster() ) );
+//        sb.append("},");
+//        sb.append(gson.toJson("replication_degree") + ":" );
+//        sb.append("{");
+//            sb.append(gson.toJson("degree") + ":" + platformConfiguration.replicationDegree() + "," );
+//            sb.append(gson.toJson("forecaster") + ":" + gson.toJson( repDegreeTuning.getForecaster() ) );
+//        sb.append("},");
+//        sb.append(gson.toJson("data_placement") + ":" + gson.toJson( (dataPlacement==true) ? "enabled" : "disabled") );
+//        sb.append("}");
         //log.info(sb);
         return sb.toString();
     }

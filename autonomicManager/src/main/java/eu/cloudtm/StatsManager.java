@@ -1,8 +1,8 @@
 package eu.cloudtm;
 
+import com.google.inject.Singleton;
 import eu.cloudtm.common.SampleListener;
-import eu.cloudtm.controller.model.PlatformConfiguration;
-import eu.cloudtm.stats.Sample;
+import eu.cloudtm.stats.WPMSample;
 import eu.cloudtm.common.dto.StatisticDTO;
 import eu.cloudtm.wpm.logService.remote.events.*;
 import eu.cloudtm.wpm.parser.ResourceType;
@@ -12,12 +12,13 @@ import org.apache.commons.logging.LogFactory;
 import java.util.*;
 
 /**
- * It contains a stack of samples. Each {@link Sample} is organized in categories
+ * It contains a stack of samples. Each {@link eu.cloudtm.stats.WPMSample} is organized in categories
  *
  * Created by: Fabio Perfetti
  * E-mail: perfabio87@gmail.com
  * Date: 6/6/13
  */
+@Singleton
 public class StatsManager implements SampleListener {
 
     private static StatsManager instance;
@@ -26,7 +27,7 @@ public class StatsManager implements SampleListener {
 
     private final static int MAX_SIZE = 1000;
 
-    private final Deque<Sample> stack = new ArrayDeque<Sample>(MAX_SIZE);
+    private final Deque<WPMSample> stack = new ArrayDeque<WPMSample>(MAX_SIZE);
 
     private StatsManager(){
 
@@ -39,9 +40,9 @@ public class StatsManager implements SampleListener {
         return instance;
     }
 
-    public void onNewSample(Sample _sample){
+    public void onNewSample(WPMSample _sample){
         if(stack.size()>=MAX_SIZE){
-            Sample removed = stack.removeLast();
+            WPMSample removed = stack.removeLast();
             //log.trace("Deleted stat: " + removed.getId());
         }
         stack.push(_sample);
@@ -59,9 +60,9 @@ public class StatsManager implements SampleListener {
 
         StatisticDTO ret = new StatisticDTO(param);
 
-        Iterator<Sample> iter;
+        Iterator<WPMSample> iter;
         for (iter = stack.descendingIterator(); iter.hasNext();  ) {
-            Sample stat = iter.next();
+            WPMSample stat = iter.next();
             double mean = getAvgAttribute(param, stat, type);
             ret.addPoint(stat.getId(),mean);
         }
@@ -76,7 +77,7 @@ public class StatsManager implements SampleListener {
      */
     public StatisticDTO getLastAvgStatistic(String param, ResourceType type){
         StatisticDTO ret = new StatisticDTO(param);
-        Sample lastStat = stack.peek();
+        WPMSample lastStat = stack.peek();
         if(lastStat == null)
             return ret;
         double mean = getAvgAttribute(param, lastStat, type);
@@ -92,28 +93,28 @@ public class StatsManager implements SampleListener {
      * @return
      */
     public double getLastAvgAttribute(String attribute, ResourceType type) {
-        Sample lastStat = stack.peek();
+        WPMSample lastStat = stack.peek();
         if(lastStat == null)
             return -1;
         return getAvgAttribute(attribute, lastStat, type);
     }
 
-    public Sample getLastSample(){
+    public WPMSample getLastSample(){
         return stack.peek();
     }
 
-    public List<Sample> getLastNSample(int n){
-        List<Sample> samples = new ArrayList<Sample>();
-        Queue<Sample> queue = Collections.asLifoQueue(new ArrayDeque<Sample>(stack));
+    public List<WPMSample> getLastNSample(int n){
+        List<WPMSample> samples = new ArrayList<WPMSample>();
+        Queue<WPMSample> queue = Collections.asLifoQueue(new ArrayDeque<WPMSample>(stack));
         for(int i=0; i<n; i++){
-            Sample sample = queue.remove();
+            WPMSample sample = queue.remove();
             samples.add( sample );
         }
         return samples;
     }
 
 
-    public static double getAvgAttribute(String attribute, HashMap<String, PublishAttribute> values){
+    public static double getAvgAttribute(String attribute, Map<String, PublishAttribute<Double>> values){
         double ret= -1.0;
         if( values != null && !values.isEmpty() ){
             ret = cast( values.get(attribute).getValue() );
@@ -153,9 +154,9 @@ public class StatsManager implements SampleListener {
      * @param type
      * @return
      */
-    public static double getAvgAttribute(String attribute, Sample stat, ResourceType type) {
+    public static double getAvgAttribute(String attribute, WPMSample stat, ResourceType type) {
 
-        HashMap<String, PublishAttribute> values;
+        Map<String, PublishAttribute<Double>> values;
         switch (type){
             case JMX:
                 values = stat.getJmx();

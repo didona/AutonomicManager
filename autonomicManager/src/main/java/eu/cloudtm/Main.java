@@ -33,7 +33,7 @@ public class Main {
 
         StatsManager statsManager = StatsManager.getInstance();
         Controller controller = Controller.getInstance(configuration, statsManager);
-        RESTServer restServer = new RESTServer();
+        RESTServer restServer = RESTServer.getInstance(controller, statsManager);
 
         /* *** WPM CONNECTOR && LISTENER *** */
         WPMConnector connector;

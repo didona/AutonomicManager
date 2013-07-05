@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -62,8 +63,8 @@ public class DSTMScenarioFactory {
     private DSTMScenarioFactory() {
     }
 
-    public static DSTMScenarioTas2 buildScenario(HashMap<String, PublishAttribute> jmx,
-                                                 HashMap<String, PublishAttribute> mem,
+    public static DSTMScenarioTas2 buildScenario(Map<String, PublishAttribute<Double>> jmx,
+                                                 Map<String, PublishAttribute<Double>> mem,
                                                  int nodes,
                                                  int threads,
                                                  double timeWindow)
@@ -81,51 +82,51 @@ public class DSTMScenarioFactory {
         return new DSTMScenarioTas2(cpu, net, workParams);
     }
 
-    public static DSTMScenarioTas2 buildCustomScenario(HashMap<String, PublishAttribute> jmx,
-                                                HashMap<String, PublishAttribute> mem,
-                                                WhatIfCustomParamDTO customParam,
-                                                int nodes,
-                                                int threads,
-                                                double timeWindow)
-            throws PublishAttributeException, Tas2Exception {
+//    public static DSTMScenarioTas2 buildCustomScenario(Map<String, PublishAttribute<Double>> jmx,
+//                                                       Map<String, PublishAttribute<Double>> mem,
+//                                                       WhatIfCustomParamDTO customParam,
+//                                                       int nodes,
+//                                                       int threads,
+//                                                       double timeWindow)
+//            throws PublishAttributeException, Tas2Exception {
+//
+//        buildBaseScenario(jmx, mem, nodes, threads, timeWindow);
+//
+//        // customizing cpu params
+//        if (customParam.getLocalReadOnlyTxLocalServiceTime() != -1)
+//            cpu.setReadOnlyTxLocalExecutionS(StatsManager.getAvgAttribute("LocalReadOnlyTxLocalServiceTime", jmx));
+//        if (customParam.getLocalUpdateTxLocalServiceTime() != -1)
+//            cpu.setUpdateTxLocalExecutionS(StatsManager.getAvgAttribute("LocalUpdateTxLocalServiceTime", jmx));
+//
+//        log.trace(cpu);
+//
+//        // customizing work params
+//        if (customParam.getSuxNumPuts() != -1)
+//            workParams.setWriteOpsPerTx(customParam.getSuxNumPuts());
+//        if (customParam.getRetryWritePercentage() != -1)
+//            workParams.setWritePercentage(customParam.getRetryWritePercentage());
+//        if (customParam.getPrepareCommandBytes() != -1)
+//            workParams.setPrepareMessageSize(customParam.getPrepareCommandBytes());
+//        if(customParam.getACF() != -1)
+//            workParams.setApplicationContentionFactor(customParam.getACF());
+//
+//        log.trace(workParams);
+//
+//        // customizing net params
+//        log.trace(net);
+//
+//        log.info("Most important features: wrPerc = " + workParams.getWritePercentage() + ", " +
+//                "wrPerTx " + workParams.getWriteOpsPerTx() +
+//                " updateTxS " + cpu.getUpdateTxLocalExecutionS() +
+//                " readOnlyTxS " + cpu.getReadOnlyTxLocalExecutionS() +
+//                " acf " + workParams.getApplicationContentionFactor());
+//
+//        return new DSTMScenarioTas2(cpu, net, workParams);
+//    }
 
-        buildBaseScenario(jmx, mem, nodes, threads, timeWindow);
 
-        // customizing cpu params
-        if (customParam.getLocalReadOnlyTxLocalServiceTime() != -1)
-            cpu.setReadOnlyTxLocalExecutionS(StatsManager.getAvgAttribute("LocalReadOnlyTxLocalServiceTime", jmx));
-        if (customParam.getLocalUpdateTxLocalServiceTime() != -1)
-            cpu.setUpdateTxLocalExecutionS(StatsManager.getAvgAttribute("LocalUpdateTxLocalServiceTime", jmx));
-
-        log.trace(cpu);
-
-        // customizing work params
-        if (customParam.getSuxNumPuts() != -1)
-            workParams.setWriteOpsPerTx(customParam.getSuxNumPuts());
-        if (customParam.getRetryWritePercentage() != -1)
-            workParams.setWritePercentage(customParam.getRetryWritePercentage());
-        if (customParam.getPrepareCommandBytes() != -1)
-            workParams.setPrepareMessageSize(customParam.getPrepareCommandBytes());
-        if(customParam.getACF() != -1)
-            workParams.setApplicationContentionFactor(customParam.getACF());
-
-        log.trace(workParams);
-
-        // customizing net params
-        log.trace(net);
-
-        log.info("Most important features: wrPerc = " + workParams.getWritePercentage() + ", " +
-                "wrPerTx " + workParams.getWriteOpsPerTx() +
-                " updateTxS " + cpu.getUpdateTxLocalExecutionS() +
-                " readOnlyTxS " + cpu.getReadOnlyTxLocalExecutionS() +
-                " acf " + workParams.getApplicationContentionFactor());
-
-        return new DSTMScenarioTas2(cpu, net, workParams);
-    }
-
-
-    private static void buildBaseScenario(HashMap<String, PublishAttribute> jmx,
-                                          HashMap<String, PublishAttribute> mem,
+    private static void buildBaseScenario(Map<String, PublishAttribute<Double>> jmx,
+                                          Map<String, PublishAttribute<Double>> mem,
                                           int nodes,
                                           int threads,
                                           double timeWindow) throws PublishAttributeException {
@@ -148,7 +149,7 @@ public class DSTMScenarioFactory {
         return set;
     }
 
-    private static CpuServiceTimes buildCpuServiceTimes(HashMap<String, PublishAttribute> values) throws PublishAttributeException {
+    private static CpuServiceTimes buildCpuServiceTimes(Map<String, PublishAttribute<Double>> values) throws PublishAttributeException {
         //Local Update
         double updateLocalTxLocalExec = StatsManager.getAvgAttribute("LocalUpdateTxLocalServiceTime", values);
         double updateLocalTxPrepare = StatsManager.getAvgAttribute("LocalUpdateTxPrepareServiceTime", values);
@@ -188,8 +189,8 @@ public class DSTMScenarioFactory {
         return cpu;
     }
 
-    private static WorkParams buildWorkloadParams(HashMap<String, PublishAttribute> JMXvalues,
-                                                  HashMap<String, PublishAttribute> MEMvalues,
+    private static WorkParams buildWorkloadParams(Map<String, PublishAttribute<Double>> JMXvalues,
+                                                  Map<String, PublishAttribute<Double>> MEMvalues,
                                                   int nodes,
                                                   int threads,
                                                   double timeWindow)
@@ -221,7 +222,7 @@ public class DSTMScenarioFactory {
         return workParams;
     }
 
-    private static NetServiceTimes buildNetServiceTimes(HashMap<String, PublishAttribute> JMXvalues) {
+    private static NetServiceTimes buildNetServiceTimes(Map<String, PublishAttribute<Double>> JMXvalues) {
         return new FixedRttServiceTimes(1, 1);
     }
 }

@@ -1,10 +1,6 @@
 package eu.cloudtm.controller.actuators;
 
 import com.google.gson.Gson;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
 import eu.cloudtm.controller.IActuator;
 import eu.cloudtm.controller.actuators.radargun.RadargunException;
 import eu.cloudtm.controller.actuators.radargun.SlaveKillerResponse;
@@ -13,6 +9,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.deltacloud.client.DeltaCloudClientException;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import java.net.MalformedURLException;
@@ -54,15 +53,28 @@ public class SlaveKillerActuator implements IActuator {
 
     @Override
     public void actuate() throws ActuatorException {
-        ClientConfig config = new DefaultClientConfig();
-        Client client = Client.create(config);
-        WebResource service = client.resource(getBaseURI());
 
-        String res = service.path(SLAVE)
+        Client client = ClientBuilder.newClient();
+        WebTarget target = client.target(getBaseURI())
+                .path("stop")
+                .path(SLAVE)
                 .path( String.valueOf(JMX_PORT) )
-                .path(COMPONENT)
-                .accept(MediaType.APPLICATION_JSON)
-                .get(String.class);
+                .path(COMPONENT);
+
+        log.info(target.getUri());
+
+        String res = target.request(MediaType.APPLICATION_JSON_TYPE).get(String.class);
+
+        // OLD
+//        ClientConfig config = new DefaultClientConfig();
+//        Client client = Client.create(config);
+//        WebResource service = client.resource(getBaseURI());
+//
+//        String res = service.path(SLAVE)
+//                .path( String.valueOf(JMX_PORT) )
+//                .path(COMPONENT)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .get(String.class);
 
         log.info(res);
         SlaveKillerResponse response = new Gson().fromJson(res, SlaveKillerResponse.class);
@@ -74,7 +86,7 @@ public class SlaveKillerActuator implements IActuator {
     }
 
     private URI getBaseURI() {
-        URI uri = UriBuilder.fromUri("http://" + HOST + ":" + PORT + "/stop").build();
+        URI uri = UriBuilder.fromUri( "http://" + HOST + ":" + PORT ).build();
         log.info(uri);
         return uri;
     }
