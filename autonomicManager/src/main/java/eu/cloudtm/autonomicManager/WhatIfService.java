@@ -33,6 +33,8 @@ public class WhatIfService {
       log.trace("WhatIfService instanced");
    }
 
+   //TODO: Be aware of this: the getParam method throws runtimeExceptions if a param is not set!!!
+   //TODO so the check "if !=null" is useless as it's never reached.
    public WhatIfCustomParamDTO retrieveCurrentValues() {
 
       log.trace("B Retrieving current values");
@@ -60,7 +62,7 @@ public class WhatIfService {
          customParam.setAvgCommitAsync(0);
       }
 
-      Object avgPrepareAsync = processedSample.getParam(Param.AvgPrepareAsync);
+      Object avgPrepareAsync = processedSample.getParam(Param.AvgPrepareRtt);
       if (avgPrepareAsync != null) {
          double val = ((Number) avgPrepareAsync).doubleValue();
          customParam.setAvgPrepareAsync(val);
@@ -258,8 +260,8 @@ public class WhatIfService {
          log.trace("Extracting AvgCommitAsync, whatIfCustomParam contains: " + whatIfCustomParam.getAvgCommitAsync());
          customParam.put(Param.AvgCommitAsync, whatIfCustomParam.getAvgCommitAsync());
 
-         log.trace("Extracting AvgPrepareAsync, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareAsync());
-         customParam.put(Param.AvgPrepareAsync, whatIfCustomParam.getAvgPrepareAsync());
+         log.trace("Extracting AvgPrepareRtt, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareAsync());
+         customParam.put(Param.AvgPrepareRtt, whatIfCustomParam.getAvgPrepareAsync());
 
          log.trace("Extracting AvgPrepareCommandSize, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareCommandSize());
          customParam.put(Param.AvgPrepareCommandSize, whatIfCustomParam.getAvgPrepareCommandSize());
