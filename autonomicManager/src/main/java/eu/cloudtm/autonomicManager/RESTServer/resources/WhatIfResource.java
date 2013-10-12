@@ -46,6 +46,7 @@ public class WhatIfResource extends AbstractResource {
                sample = lastCustomSample = processedSampleFromStub();
             else
                sample = lastCustomSample;
+            log.trace("Successfully created "+sample);
          } catch (IOException e) {
             e.printStackTrace();
             log.error(e);

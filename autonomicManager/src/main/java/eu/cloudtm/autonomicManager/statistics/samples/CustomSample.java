@@ -17,22 +17,28 @@ public class CustomSample extends ProcessedSample {
    private static Log log = LogFactory.getLog(CustomSample.class);
    private final Map<Param, Object> customParam;
    private final Map<EvaluatedParam, Object> customEvaluatedParam;
-   private ProcessedSample sample;
+   private ProcessedSample processedSample;
 
-   public CustomSample(ProcessedSample sample, Map<Param, Object> customParam, Map<EvaluatedParam, Object> customEvaluatedParam) {
-      super(sample);
-      this.sample = sample;
+   public CustomSample(ProcessedSample processedSample, Map<Param, Object> customParam, Map<EvaluatedParam, Object> customEvaluatedParam) {
+      super(processedSample);
+      this.processedSample = processedSample;
       this.customParam = customParam;
       this.customEvaluatedParam = customEvaluatedParam;
+   }
+
+   //A CustomSample can be created only starting from params and evalParams, without a proper Sample inside
+   @Override
+   public long getId() {
+      return sample == null ? -1 : sample.getId();
    }
 
    @Override
    public Object getParam(Param param) {
       Object retVal = customParam.get(param);
       if (retVal == null) {
-         if (sample == null)
+         if (processedSample == null)
             throw new RuntimeException("Param " + param + " not set!!");
-         retVal = sample.getParam(param);
+         retVal = processedSample.getParam(param);
          if (retVal == null) {
             throw new RuntimeException("Param " + param + " not set!!");
          }
@@ -50,9 +56,9 @@ public class CustomSample extends ProcessedSample {
       retVal = customEvaluatedParam.get(EvaluatedParam.ACF);
 
       if (retVal == null) {
-         if (sample == null)
+         if (processedSample == null)
             throw new RuntimeException("Param " + EvaluatedParam.ACF + " not set!!");
-         retVal = sample.getEvaluatedParam(EvaluatedParam.ACF);
+         retVal = processedSample.getEvaluatedParam(EvaluatedParam.ACF);
          if (retVal == null) {
             throw new RuntimeException("Param " + EvaluatedParam.ACF + " not set!!");
          }
@@ -66,7 +72,7 @@ public class CustomSample extends ProcessedSample {
    @Override
    public String toString() {
       return "CustomSample{" +
-              "sample=" + sample +
+              "processedSample=" + processedSample +
               ", customParam=" + customParam.toString() +
               ", customEvaluatedParam=" + customEvaluatedParam.toString() +
               '}';
