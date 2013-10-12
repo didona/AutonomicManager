@@ -10,8 +10,8 @@ import eu.cloudtm.autonomicManager.oracles.Oracle;
 import eu.cloudtm.autonomicManager.oracles.OracleService;
 import eu.cloudtm.autonomicManager.oracles.OracleServiceFactory;
 import eu.cloudtm.autonomicManager.oracles.OutputOracle;
-import eu.cloudtm.autonomicManager.statistics.samples.CustomSample;
 import eu.cloudtm.autonomicManager.statistics.ProcessedSample;
+import eu.cloudtm.autonomicManager.statistics.samples.CustomSample;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,7 +26,6 @@ import java.util.Map;
 public class WhatIfService {
 
    private static Log log = LogFactory.getLog(WhatIfService.class);
-
    private final ProcessedSample processedSample;
 
    public WhatIfService(ProcessedSample processedSample) {
@@ -43,6 +42,7 @@ public class WhatIfService {
       Object acfObj = processedSample.getEvaluatedParam(EvaluatedParam.ACF);
       if (acfObj != null) {
          customParam.setACF((Double) acfObj);
+         log.trace("ACF set");
       } else {
          log.warn("ACF is not set!");
          customParam.setACF(0.0);
@@ -53,6 +53,7 @@ public class WhatIfService {
 
          double val = ((Number) avgCommitAsync).doubleValue();
          customParam.setAvgCommitAsync(val);
+         log.trace("commit set");
 
       } else {
          log.warn("AvgCommitAsync is not set!");
@@ -63,6 +64,7 @@ public class WhatIfService {
       if (avgPrepareAsync != null) {
          double val = ((Number) avgPrepareAsync).doubleValue();
          customParam.setAvgPrepareAsync(val);
+         log.trace("Prepare set");
       } else {
          log.warn("AvgPrepareAsync is not set!");
          customParam.setAvgPrepareAsync(0);
@@ -73,6 +75,7 @@ public class WhatIfService {
 
          double val = ((Number) avgPrepareCommandSize).doubleValue();
          customParam.setAvgPrepareCommandSize(val);
+         log.trace("PrepareCommandSize set");
       } else {
          log.warn("AvgPrepareCommandSize is not set!");
          customParam.setAvgPrepareCommandSize(0);
@@ -83,6 +86,7 @@ public class WhatIfService {
 
          double val = ((Number) avgNumPutsBySuccessfulLocalTx).doubleValue();
          customParam.setAvgNumPutsBySuccessfulLocalTx(val);
+         log.trace("Put Set");
       } else {
          log.warn("AvgNumPutsBySuccessfulLocalTx is not set!");
          customParam.setAvgNumPutsBySuccessfulLocalTx(0.0);
@@ -93,6 +97,7 @@ public class WhatIfService {
 
          double val = ((Number) percentageSuccessWriteTransactions).doubleValue();
          customParam.setPercentageSuccessWriteTransactions(val);
+         log.trace("WriteXact set");
       } else {
          log.warn("PercentageSuccessWriteTransactions is not set!");
          customParam.setPercentageSuccessWriteTransactions(0.0);
@@ -103,6 +108,7 @@ public class WhatIfService {
 
          double val = ((Number) localUpdateTxLocalServiceTime).doubleValue();
          customParam.setLocalUpdateTxLocalServiceTime(val);
+         log.trace("UpdateTxService set");
       } else {
          log.warn("LocalUpdateTxLocalServiceTime is not set!");
          customParam.setLocalUpdateTxLocalServiceTime(0.0);
@@ -113,6 +119,7 @@ public class WhatIfService {
 
          double val = ((Number) localReadOnlyTxLocalServiceTime).doubleValue();
          customParam.setLocalReadOnlyTxLocalServiceTime(val);
+         log.trace("ROTxService set");
       } else {
          log.warn("LocalReadOnlyTxLocalServiceTime is not set!");
          customParam.setLocalReadOnlyTxLocalServiceTime(0);
@@ -123,6 +130,7 @@ public class WhatIfService {
 
          double val = ((Number) avgRemoteGetRtt).doubleValue();
          customParam.setAvgRemoteGetRtt(val);
+         log.trace("Remote get set");
       } else {
          log.warn("AvgRemoteGetRtt is not set!");
          customParam.setAvgRemoteGetRtt(0);
@@ -133,6 +141,7 @@ public class WhatIfService {
 
          double val = ((Number) avgGetsPerWrTransaction).doubleValue();
          customParam.setAvgGetsPerWrTransaction(val);
+         log.trace("GetPerTx set");
       } else {
          log.warn("AvgGetsPerWrTransaction is not set!");
          customParam.setAvgGetsPerWrTransaction(0.0);
@@ -143,6 +152,7 @@ public class WhatIfService {
 
          double val = ((Number) avgGetsPerROTransaction).doubleValue();
          customParam.setAvgGetsPerROTransaction(val);
+         log.trace("GetPerRo set");
       } else {
          log.warn("AvgGetsPerROTransaction is not set!");
          customParam.setAvgGetsPerROTransaction(0);
@@ -152,7 +162,6 @@ public class WhatIfService {
       log.trace("retrieving current values done!");
       return customParam;
    }
-
 
    public List<WhatIfDTO> evaluate(WhatIfCustomParamDTO customParamDTO) {
 
@@ -183,24 +192,24 @@ public class WhatIfService {
             case NODES:
                log.info("Nodes on x-axis");
                currForecast = oracleService.whatIf(customSample,
-                                                   customParamDTO.getFixedNodesMin(),
-                                                   customParamDTO.getFixedNodesMax(),
-                                                   customParamDTO.getFixedProtocol(),
-                                                   customParamDTO.getFixedDegreeMax());
+                       customParamDTO.getFixedNodesMin(),
+                       customParamDTO.getFixedNodesMax(),
+                       customParamDTO.getFixedProtocol(),
+                       customParamDTO.getFixedDegreeMax());
                break;
             case DEGREE:
                log.info("Degrees on x-axis");
                currForecast = oracleService.whatIf(customSample,
-                                                   customParamDTO.getFixedDegreeMin(),
-                                                   customParamDTO.getFixedDegreeMax(),
-                                                   customParamDTO.getFixedNodesMax(),
-                                                   customParamDTO.getFixedProtocol());
+                       customParamDTO.getFixedDegreeMin(),
+                       customParamDTO.getFixedDegreeMax(),
+                       customParamDTO.getFixedNodesMax(),
+                       customParamDTO.getFixedProtocol());
                break;
             case PROTOCOL:
                log.info("Protocols on x-axis");
                currForecast = oracleService.whatIf(customSample,
-                                                   customParamDTO.getFixedNodesMax(),
-                                                   customParamDTO.getFixedDegreeMax());
+                       customParamDTO.getFixedNodesMax(),
+                       customParamDTO.getFixedDegreeMax());
                break;
             default:
                throw new IllegalStateException("Xaxis can't be null!");

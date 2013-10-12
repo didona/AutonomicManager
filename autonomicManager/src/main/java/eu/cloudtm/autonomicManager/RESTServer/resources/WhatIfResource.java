@@ -46,7 +46,7 @@ public class WhatIfResource extends AbstractResource {
                sample = lastCustomSample = processedSampleFromStub();
             else
                sample = lastCustomSample;
-            log.trace("Successfully created "+sample);
+            log.trace("Successfully created " + sample);
          } catch (IOException e) {
             e.printStackTrace();
             log.error(e);
@@ -66,22 +66,29 @@ public class WhatIfResource extends AbstractResource {
 
       log.info("ACF: " + sample.getEvaluatedParam(EvaluatedParam.ACF));
 
-      WhatIfService whatIfService = new WhatIfService(sample);
-      WhatIfCustomParamDTO customDTO = whatIfService.retrieveCurrentValues();
+      try {
+         WhatIfService whatIfService = new WhatIfService(sample);
+         WhatIfCustomParamDTO customDTO = whatIfService.retrieveCurrentValues();
 
-      List<String> fieldExclusions = new ArrayList<String>();
-      fieldExclusions.add("forecasters");
-      fieldExclusions.add("replProtocol");
+         List<String> fieldExclusions = new ArrayList<String>();
+         fieldExclusions.add("forecasters");
+         fieldExclusions.add("replProtocol");
 
 
-      Gson gson = GsonFactory.build(fieldExclusions, null);
+         Gson gson = GsonFactory.build(fieldExclusions, null);
 
-      String json = gson.toJson(customDTO);
+         String json = gson.toJson(customDTO);
 
-      log.info("Custom Values Retrieved: " + json);
+         log.info("Custom Values Retrieved: " + json);
 
-      Response.ResponseBuilder builder = Response.ok(json);
-      return makeCORS(builder);
+         Response.ResponseBuilder builder = Response.ok(json);
+         return makeCORS(builder);
+      } catch (Exception e) {
+         e.printStackTrace();
+         log.error(e);
+         return null;
+      }
+
    }
 
    @GET
