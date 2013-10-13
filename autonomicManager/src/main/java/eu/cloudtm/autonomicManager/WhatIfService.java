@@ -260,8 +260,17 @@ public class WhatIfService {
          log.trace("Extracting AvgCommitAsync, whatIfCustomParam contains: " + whatIfCustomParam.getAvgCommitAsync());
          customParam.put(Param.AvgCommitAsync, whatIfCustomParam.getAvgCommitAsync());
 
-         log.trace("Extracting AvgPrepareRtt, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareAsync());
+         log.trace("Extracting AvgRemoteGetRtt, whatIfCustomParam contains: " + whatIfCustomParam.getAvgRemoteGetRtt());
          customParam.put(Param.AvgPrepareRtt, whatIfCustomParam.getAvgPrepareAsync());
+
+         log.trace("Extracting AvgPrepareRtt, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareAsync());
+         customParam.put(Param.AvgRemoteGetRtt, whatIfCustomParam.getAvgRemoteGetRtt());
+
+         log.trace("Extracting AvgGetsPerRoTransaction, whatIfCustomParam contains: " + whatIfCustomParam.getAvgGetsPerROTransaction());
+         customParam.put(Param.AvgGetsPerROTransaction, whatIfCustomParam.getAvgGetsPerROTransaction());
+
+         log.trace("Extracting AvgGetsPerWrTransaction, whatIfCustomParam contains: " + whatIfCustomParam.getAvgGetsPerWrTransaction());
+         customParam.put(Param.AvgGetsPerWrTransaction, whatIfCustomParam.getAvgGetsPerWrTransaction());
 
          log.trace("Extracting AvgPrepareCommandSize, whatIfCustomParam contains: " + whatIfCustomParam.getAvgPrepareCommandSize());
          customParam.put(Param.AvgPrepareCommandSize, whatIfCustomParam.getAvgPrepareCommandSize());

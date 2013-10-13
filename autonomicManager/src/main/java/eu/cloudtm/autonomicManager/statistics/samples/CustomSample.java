@@ -36,10 +36,13 @@ public class CustomSample extends ProcessedSample {
    public Object getParam(Param param) {
       Object retVal = customParam.get(param);
       if (retVal == null) {
-         if (processedSample == null)
+         if (processedSample == null) {
+            log.error("Param " + param + " not set!!");
             throw new RuntimeException("Param " + param + " not set!!");
+         }
          retVal = processedSample.getParam(param);
          if (retVal == null) {
+            log.error("Param " + param + " not set!!");
             throw new RuntimeException("Param " + param + " not set!!");
          }
          log.trace("User didn't set " + param + ", using the one measured ( " + retVal + " )");
