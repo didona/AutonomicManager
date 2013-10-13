@@ -194,7 +194,7 @@ public class OracleServiceImpl implements OracleService {
    public final Map<PlatformConfiguration, OutputOracle> whatIf(ProcessedSample sample, int minNumNodes,
                                                                 int maxNumNodes, ReplicationProtocol fixedProtocol,
                                                                 int fixedDegree) {
-
+      log.trace("Nodes whatif");
       TreeMap<PlatformConfiguration, OutputOracle> result = new TreeMap<PlatformConfiguration, OutputOracle>();
       if (fixedDegree <= 0)
          throw new IllegalArgumentException("fixedDegree must be > 0");
@@ -207,7 +207,7 @@ public class OracleServiceImpl implements OracleService {
       if (maxNumNodes > nodesMax) {
          maxNumNodes = nodesMax;
       }
-
+      log.trace("Going to what-if with number of nodes");
       int degree = 0;
       for (int nodes : range(minNumNodes, maxNumNodes)) {
 
@@ -227,13 +227,14 @@ public class OracleServiceImpl implements OracleService {
    }
 
    private List<Integer> range(int min, int max) {
+      log.trace("Range invoked");
       AdaptationManagerConfig config = Config.getInstance();
       if (config.isWhatIfFixedDomain()) {
          log.trace("Fixed step whatif");
          return fixedNodesRange(min, max, config.whatIfGranularity());
       }
       if (config.isWhatIfSamplingDomain()) {
-         log.trace("Sampling step whatif");
+         log.trace("Sampling whatif");
          return samplingNodesRange(min, max, config.whatIfGranularity());
       }
       log.trace("All solutions whatif");
@@ -241,6 +242,7 @@ public class OracleServiceImpl implements OracleService {
    }
 
    private List<Integer> fixedNodesRange(int min, int max, int step) {
+      log.trace("FixedNodeRange with " + min + ", " + max + ", " + step);
       ArrayList<Integer> ai = new ArrayList<Integer>();
       for (int i = min; i < max; i += step) {
          ai.add(i);
@@ -254,6 +256,8 @@ public class OracleServiceImpl implements OracleService {
       double ma = (double) max;
       double spli = (double) split;
       double step = (ma - mi) / spli;
+      if (step < 1)
+         step = 1;
       return fixedNodesRange(min, max, (int) step);
    }
 

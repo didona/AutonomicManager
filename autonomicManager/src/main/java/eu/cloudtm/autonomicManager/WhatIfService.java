@@ -255,7 +255,7 @@ public class WhatIfService {
             log.warn("FIX TX CLASSES");
 
 
-            currWhatIfResult.addThroughputPoint(xaxis, currOut.throughput(0));
+            currWhatIfResult.addThroughputPoint(xaxis, currOut.throughput(0) + currOut.throughput(1));
             currWhatIfResult.addReadResponseTimePoint(xaxis, currOut.responseTime(0));
             currWhatIfResult.addWriteResponseTimePoint(xaxis, currOut.responseTime(1));
             currWhatIfResult.addAbortRatePoint(xaxis, currOut.abortRate(1));

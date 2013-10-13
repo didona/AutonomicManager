@@ -7,6 +7,8 @@ import eu.cloudtm.autonomicManager.commons.WhatIFEnum;
 import eu.cloudtm.autonomicManager.oracles.OracleServiceEnum;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * // TODO: Document this
@@ -15,6 +17,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  * @since 4.0
  */
 public class AdaptationManagerConfig extends PropertiesConfiguration {
+   private static final Log log = LogFactory.getLog(AdaptationManagerConfig.class);
 
    public AdaptationManagerConfig(String fileName) throws ConfigurationException {
       super(fileName);
