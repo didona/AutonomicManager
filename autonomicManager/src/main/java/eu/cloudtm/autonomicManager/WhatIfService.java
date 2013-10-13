@@ -245,7 +245,7 @@ public class WhatIfService {
             currWhatIfResult.addThroughputPoint(xaxis, currOut.throughput(0));
             currWhatIfResult.addReadResponseTimePoint(xaxis, currOut.responseTime(0));
             currWhatIfResult.addWriteResponseTimePoint(xaxis, currOut.responseTime(1));
-            currWhatIfResult.addAbortRatePoint(xaxis, currOut.abortRate(0));
+            currWhatIfResult.addAbortRatePoint(xaxis, currOut.abortRate(1));
          }
 
 
