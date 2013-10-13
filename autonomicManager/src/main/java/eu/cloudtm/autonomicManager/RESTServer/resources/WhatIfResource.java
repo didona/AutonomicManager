@@ -32,7 +32,6 @@ public class WhatIfResource extends AbstractResource {
    private StatsManager statsManager;
    @Inject
    private AutonomicManager autonomicManager;
-   private ProcessedSample lastCustomSample = null;
 
    @GET
    @Path("/values")
@@ -43,11 +42,15 @@ public class WhatIfResource extends AbstractResource {
       if (Config.getInstance().isUsingStub()) {
          log.trace("Using help from stub");
          try {
-            if (lastCustomSample == null)
-               sample = lastCustomSample = processedSampleFromStub();
-            else
-               sample = lastCustomSample;
-            log.trace("Successfully created " + sample);
+            if (statsManager.popLastStubSample() == null) {
+               sample = processedSampleFromStub();
+               statsManager.pushStubSample(sample);
+               log.trace("Successfully created " + sample);
+            } else {
+               sample = statsManager.popLastStubSample();
+               log.trace("Using old " + sample);
+            }
+
          } catch (IOException e) {
             e.printStackTrace();
             log.error(e);
@@ -229,7 +232,9 @@ public class WhatIfResource extends AbstractResource {
          customParam.setAvgPrepareAsync(avgPrepareAsync);
          ProcessedSample sample;
          if (Config.getInstance().isUsingStub()) {
-            sample = lastCustomSample;
+            sample = statsManager.popLastStubSample();
+            if (sample == null)
+               return null;
             log.trace("Using help stub");
          } else {
             sample = statsManager.getLastSample();

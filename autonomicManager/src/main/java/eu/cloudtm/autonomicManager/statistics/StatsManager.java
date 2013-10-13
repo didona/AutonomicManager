@@ -26,4 +26,8 @@ public interface StatsManager {
    public void pushTopKSample(TopKeySample sample);
 
    public TopKeySample getLastTopKSample();
+
+   public void pushStubSample(ProcessedSample s);
+
+   public ProcessedSample popLastStubSample();
 }

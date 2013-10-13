@@ -23,6 +23,7 @@ public class WPMStatsManager extends SampleProducer implements StatsManager {
    private final Deque<ProcessedSample> stack = new ArrayDeque<ProcessedSample>(MAX_SIZE);
    private final Deque<TopKeySample> topKStack = new ArrayDeque<TopKeySample>(MAX_SIZE);
    private final Set<SampleListener> listeners = new HashSet<SampleListener>();
+   private ProcessedSample lastStubSample = null;
 
    public WPMStatsManager() {
    }
@@ -56,6 +57,18 @@ public class WPMStatsManager extends SampleProducer implements StatsManager {
    @Override
    public final ProcessedSample getLastSample() {
       return stack.peek();
+   }
+
+   @Override
+   public void pushStubSample(ProcessedSample s) {
+      this.lastStubSample = s;
+   }
+
+   @Override
+   public ProcessedSample popLastStubSample() {
+      if (lastStubSample == null)
+         log.warn("LastStubSample is null");
+      return lastStubSample;
    }
 
    @Override
