@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Path("/whatif")
@@ -214,35 +215,47 @@ public class WhatIfResource extends AbstractResource {
          default:
             throw new IllegalStateException("Never should reach this point!");
       }
+      try {
+         customParam.setACF(acf);
+         customParam.setAvgCommitAsync(avgCommitAsync);
+         customParam.setAvgGetsPerROTransaction(avgGetsPerROTransaction);
+         customParam.setAvgGetsPerWrTransaction(avgGetsPerWrTransaction);
+         customParam.setLocalReadOnlyTxLocalServiceTime(localReadOnlyTxLocalServiceTime);
+         customParam.setLocalUpdateTxLocalServiceTime(localUpdateTxLocalServiceTime);
+         customParam.setAvgPrepareCommandSize(avgPrepareCommandSize);
+         customParam.setAvgNumPutsBySuccessfulLocalTx(avgNumPutsBySuccessfulLocalTx);
+         customParam.setAvgRemoteGetRtt(avgRemoteGetRtt);
+         customParam.setPercentageSuccessWriteTransactions(percentageSuccessWriteTransactions);
+         customParam.setAvgPrepareAsync(avgPrepareAsync);
+         ProcessedSample sample;
+         if (Config.getInstance().isUsingStub()) {
+            sample = lastCustomSample;
+            log.trace("Using help stub");
+         } else {
+            sample = statsManager.getLastSample();
+            log.trace("Using normal whatif");
+         }
 
-      customParam.setACF(acf);
-      customParam.setAvgCommitAsync(avgCommitAsync);
-      customParam.setAvgGetsPerROTransaction(avgGetsPerROTransaction);
-      customParam.setAvgGetsPerWrTransaction(avgGetsPerWrTransaction);
-      customParam.setLocalReadOnlyTxLocalServiceTime(localReadOnlyTxLocalServiceTime);
-      customParam.setLocalUpdateTxLocalServiceTime(localUpdateTxLocalServiceTime);
-      customParam.setAvgPrepareCommandSize(avgPrepareCommandSize);
-      customParam.setAvgNumPutsBySuccessfulLocalTx(avgNumPutsBySuccessfulLocalTx);
-      customParam.setAvgRemoteGetRtt(avgRemoteGetRtt);
-      customParam.setPercentageSuccessWriteTransactions(percentageSuccessWriteTransactions);
-      customParam.setAvgPrepareAsync(avgPrepareAsync);
+         WhatIfService whatIfService = new WhatIfService(sample);
+         if (sample != null)
+            log.info("Sample: " + sample.getId());
+         else
+            log.info("Sample is null");
 
-      ProcessedSample sample = statsManager.getLastSample();
-      WhatIfService whatIfService = new WhatIfService(sample);
-      if (sample != null)
-         log.info("Sample: " + sample.getId());
-      else
-         log.info("Sample is null");
+         List<WhatIfDTO> result = whatIfService.evaluate(customParam);
 
-      List<WhatIfDTO> result = whatIfService.evaluate(customParam);
+         Gson gson = new Gson();
+         String json = gson.toJson(result);
 
-      Gson gson = new Gson();
-      String json = gson.toJson(result);
+         log.trace("RESULT: " + json);
 
-      log.trace("RESULT: " + json);
-
-      Response.ResponseBuilder builder = Response.ok(json);
-      return makeCORS(builder);
+         Response.ResponseBuilder builder = Response.ok(json);
+         return makeCORS(builder);
+      } catch (Exception e) {
+         log.error(e);
+         log.error(Arrays.toString(e.getStackTrace()));
+         return null;
+      }
    }
 
    private ProcessedSample processedSampleFromStub() throws IOException {
