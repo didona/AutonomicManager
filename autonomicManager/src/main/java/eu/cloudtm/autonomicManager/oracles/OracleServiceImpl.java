@@ -26,7 +26,7 @@ public class OracleServiceImpl implements OracleService {
    protected int nodesMin = 2, nodesMax = 10; // TODO: da rendere parametrizzabili
    protected int degreeMin = 2;
    private Oracle oracle;
-   private boolean dump = false;
+   private final static boolean dump = false;
 
    public OracleServiceImpl(Oracle oracle) {
       this.oracle = oracle;

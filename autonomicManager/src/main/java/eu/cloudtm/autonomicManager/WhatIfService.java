@@ -1,9 +1,6 @@
 package eu.cloudtm.autonomicManager;
 
-import eu.cloudtm.autonomicManager.commons.EvaluatedParam;
-import eu.cloudtm.autonomicManager.commons.Forecaster;
-import eu.cloudtm.autonomicManager.commons.Param;
-import eu.cloudtm.autonomicManager.commons.PlatformConfiguration;
+import eu.cloudtm.autonomicManager.commons.*;
 import eu.cloudtm.autonomicManager.commons.dto.WhatIfCustomParamDTO;
 import eu.cloudtm.autonomicManager.commons.dto.WhatIfDTO;
 import eu.cloudtm.autonomicManager.oracles.Oracle;
@@ -190,28 +187,44 @@ public class WhatIfService {
 
          Map<PlatformConfiguration, OutputOracle> currForecast;
 
+         Integer nodeMin = customParamDTO.getFixedNodesMin();
+         Integer nodeMax = customParamDTO.getFixedNodesMax();
+         ReplicationProtocol protocol = customParamDTO.getFixedProtocol();
+         Integer degreeMin = customParamDTO.getFixedDegreeMin();
+         Integer degreemax = customParamDTO.getFixedDegreeMax();
+
          switch (customParamDTO.getXaxis()) {
             case NODES:
                log.info("Nodes on x-axis");
+               log.info("Min Nodes = " + nodeMin);
+               log.info("Max Nodes = " + nodeMax);
+               log.info("Fixed Degree = " + degreemax);
+               log.info("Protocol = " + protocol);
                currForecast = oracleService.whatIf(customSample,
-                       customParamDTO.getFixedNodesMin(),
-                       customParamDTO.getFixedNodesMax(),
-                       customParamDTO.getFixedProtocol(),
-                       customParamDTO.getFixedDegreeMax());
+                       nodeMin,
+                       nodeMax,
+                       protocol,
+                       degreemax);
                break;
             case DEGREE:
                log.info("Degrees on x-axis");
+               log.info("Min Degree = " + degreeMin);
+               log.info("Max Degree = " + degreemax);
+               log.info("Fixed Nodes = " + nodeMax);
+               log.info("Protocol = " + protocol);
                currForecast = oracleService.whatIf(customSample,
-                       customParamDTO.getFixedDegreeMin(),
-                       customParamDTO.getFixedDegreeMax(),
-                       customParamDTO.getFixedNodesMax(),
-                       customParamDTO.getFixedProtocol());
+                       degreeMin,
+                       degreemax,
+                       nodeMax,
+                       protocol);
                break;
             case PROTOCOL:
                log.info("Protocols on x-axis");
+               log.info("Fixed nodes " + nodeMax);
+               log.info("Fixed degree " + degreemax);
                currForecast = oracleService.whatIf(customSample,
-                       customParamDTO.getFixedNodesMax(),
-                       customParamDTO.getFixedDegreeMax());
+                       nodeMax,
+                       degreemax);
                break;
             default:
                throw new IllegalStateException("Xaxis can't be null!");
