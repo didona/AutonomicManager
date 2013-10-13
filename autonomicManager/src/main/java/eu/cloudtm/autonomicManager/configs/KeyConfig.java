@@ -16,8 +16,7 @@ public enum KeyConfig {
    ENVIRONMENT_INIT_R_PROT("environment.init_r_protocol"),
 
 
-    /* ****** WORKLOAD ANALYZER ****** */
-
+   /* ****** WORKLOAD ANALYZER ****** */
    WORKLOAD_ANALYZER_AUTOSTART("workloadAnalyzer.autoStart"),
 
    ALERT_MANAGER_POLICY("alertManager.policy"),
@@ -25,8 +24,7 @@ public enum KeyConfig {
    ALERT_MANAGER_EVALUATION_PERIOD("alertManager.evaluationPeriod"),
 
 
-    /* ******* CHANGE DETECTORs ******* */
-
+   /* ******* CHANGE DETECTORs ******* */
    SLIDE_WINDOW_SIZE("changeDetector.slideWindowSize"),
    CHANGE_DETECTOR_DELTA("changeDetector.delta"),
    CHANGE_DETECTOR_AVG_WINDOW("changeDetector.avgWindow"),
@@ -38,8 +36,7 @@ public enum KeyConfig {
    OPTIMIZER_LARD("optimizer.lard"),
 
 
-    /* ******* ACTUATOR ******* */
-
+   /* ******* ACTUATOR ******* */
    ACTUATOR_TYPE("actuator.type"),
    ACTUATOR_IS_RADARGUN("actuator.isRadargun"),
 
@@ -73,8 +70,7 @@ public enum KeyConfig {
    INITIAL_NUM_NODES("initial.numNodes"),      //DIE
 
 
-    /* ******* RECONFIGURATOR ******* */
-
+   /* ******* RECONFIGURATOR ******* */
    RECONFIGURATOR_IGNORE_ERROR("reconfigurator.ignoreError"),
    RECONFIGURATOR_SIMULATE("reconfigurator.simulate"),
 
@@ -85,8 +81,7 @@ public enum KeyConfig {
    RECONFIGURATOR_RECONFIGURE_PROTOCOL("reconfigurator.reconfigureProtocol"),
 
 
-    /* ******* FORECASTERs ******* */
-
+   /* ******* FORECASTERs ******* */
    FORECASTER_COMMITTEE("forecaster.committee"),
    FORECASTER_ANALYTICAL("forecaster.analytical"),
    FORECASTER_SIMULATOR("forecaster.simulator"),
@@ -101,10 +96,13 @@ public enum KeyConfig {
    ORACLE_SERVICE_MIN_RD("oracleService.minRD"),
    ORACLE_SERVICE_MAX_RD("oracleService.maxRD"),
 
-   ENFORCE_STABILITY("reconfigurator.enforceStability"),
-   STUB("forecaster.stub")
-   ;
+   WHATIF_DOMAIN("whatif.domain"),
+   WHATIF_GRANULARITY("whatif.granularity"),
+   WHATIF_STEP("whatif.step"),
+   WHATIF_SPLIT("whatit.split"),
 
+   ENFORCE_STABILITY("reconfigurator.enforceStability"),
+   STUB("forecaster.stub");
    private final String key;
 
    private KeyConfig(String key) {

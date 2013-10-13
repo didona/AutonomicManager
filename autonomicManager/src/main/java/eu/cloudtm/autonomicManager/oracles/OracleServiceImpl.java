@@ -13,9 +13,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by: Fabio Perfetti E-mail: perfabio87@gmail.com Date: 6/14/13
@@ -24,6 +22,8 @@ public class OracleServiceImpl implements OracleService {
 
    private static Log log = LogFactory.getLog(OracleServiceImpl.class);
    protected int nodesMin = 2, nodesMax = 10; // TODO: da rendere parametrizzabili
+
+
    protected int degreeMin = 2;
    private Oracle oracle;
    private final static boolean dump = false;
@@ -165,7 +165,7 @@ public class OracleServiceImpl implements OracleService {
          maxNumDegree = fixedNodes;
       }
 
-      for (int degree = minNumDegree; degree <= maxNumDegree; degree++) {
+      for (int degree : range(minNumDegree, maxNumDegree)) {
 
          log.trace("Preparing query for <" + fixedNodes + ", " + degree + ", " + fixedProtocol + ">");
 
@@ -203,7 +203,7 @@ public class OracleServiceImpl implements OracleService {
       }
 
       int degree = 0;
-      for (int nodes = minNumNodes; nodes <= maxNumNodes; nodes++) {
+      for (int nodes : range(minNumNodes, maxNumNodes)) {
 
          if (fixedDegree > nodes) {
             degree = nodes;
@@ -218,6 +218,37 @@ public class OracleServiceImpl implements OracleService {
          result.put(currConf, currOutputOracle);
       }
       return result;
+   }
+
+   private List<Integer> range(int min, int max) {
+      AdaptationManagerConfig config = Config.getInstance();
+      if (config.isWhatIfFixedDomain()) {
+         log.trace("Fixed step whatif");
+         return fixedNodesRange(min, max, config.whatIfStep());
+      }
+      if (config.isWhatIfSamplingDomain()) {
+         log.trace("Sampling step whatif");
+         return samplingNodesRange(min, max, config.whatIfSplit());
+      }
+      log.trace("All solutions whatif");
+      return fixedNodesRange(min, max, 1);
+   }
+
+   private List<Integer> fixedNodesRange(int min, int max, int step) {
+      ArrayList<Integer> ai = new ArrayList<Integer>();
+      for (int i = min; i < max; i += step) {
+         ai.add(i);
+      }
+      ai.add(max);
+      return ai;
+   }
+
+   private List<Integer> samplingNodesRange(int min, int max, int split) {
+      double mi = (double) min;
+      double ma = (double) max;
+      double spli = (double) split;
+      double step = (ma - mi) / spli;
+      return fixedNodesRange(min, max, (int) step);
    }
 
    protected OutputOracle doForecast(PlatformConfiguration currConf, ProcessedSample sample) {

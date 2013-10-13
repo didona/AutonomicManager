@@ -3,6 +3,7 @@ package eu.cloudtm.autonomicManager.configs;
 import eu.cloudtm.autonomicManager.commons.Forecaster;
 import eu.cloudtm.autonomicManager.commons.PlatformConfiguration;
 import eu.cloudtm.autonomicManager.commons.ReplicationProtocol;
+import eu.cloudtm.autonomicManager.commons.WhatIfEnum;
 import eu.cloudtm.autonomicManager.oracles.OracleServiceEnum;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -131,5 +132,34 @@ public class AdaptationManagerConfig extends PropertiesConfiguration {
    public String stub() {
       return getString(KeyConfig.STUB.key());
    }
+
+   /**
+    * *********************** WHAT IF ************************
+    */
+
+   public boolean isWhatIfAllDomain() {
+      return isWhatIfDomainX(WhatIfEnum.ALL);
+   }
+
+   public boolean isWhatIfFixedDomain() {
+      return isWhatIfDomainX(WhatIfEnum.FIXED);
+   }
+
+   public boolean isWhatIfSamplingDomain() {
+      return isWhatIfDomainX(WhatIfEnum.SAMPLING);
+   }
+
+   private boolean isWhatIfDomainX(WhatIfEnum e) {
+      return WhatIfEnum.valueOf(getString(KeyConfig.WHATIF_DOMAIN.key())).equals(e);
+   }
+
+   public int whatIfStep() {
+      return getInt(KeyConfig.WHATIF_STEP.key());
+   }
+
+   public int whatIfSplit() {
+      return getInt(KeyConfig.WHATIF_SPLIT.key());
+   }
+
 
 }
