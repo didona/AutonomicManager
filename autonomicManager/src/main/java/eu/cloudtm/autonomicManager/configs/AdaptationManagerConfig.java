@@ -153,12 +153,8 @@ public class AdaptationManagerConfig extends PropertiesConfiguration {
       return WhatIFEnum.valueOf(getString(KeyConfig.WHATIF_DOMAIN.key())).equals(e);
    }
 
-   public int whatIfStep() {
-      return getInt(KeyConfig.WHATIF_STEP.key());
-   }
-
-   public int whatIfSplit() {
-      return getInt(KeyConfig.WHATIF_SPLIT.key());
+   public int whatIfGranularity() {
+      return getInt(KeyConfig.WHATIF_GRANULARITY.key());
    }
 
 

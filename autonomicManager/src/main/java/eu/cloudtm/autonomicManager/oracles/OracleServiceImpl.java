@@ -164,16 +164,22 @@ public class OracleServiceImpl implements OracleService {
       if (maxNumDegree > fixedNodes) {
          maxNumDegree = fixedNodes;
       }
+      try {
+         for (int degree : range(minNumDegree, maxNumDegree)) {
 
-      for (int degree : range(minNumDegree, maxNumDegree)) {
+            log.trace("Preparing query for <" + fixedNodes + ", " + degree + ", " + fixedProtocol + ">");
 
-         log.trace("Preparing query for <" + fixedNodes + ", " + degree + ", " + fixedProtocol + ">");
-
-         PlatformConfiguration currConf = new PlatformConfiguration(fixedNodes, degree, fixedProtocol);
-         OutputOracle currOutputOracle = doForecast(currConf, sample);
-         result.put(currConf, currOutputOracle);
+            PlatformConfiguration currConf = new PlatformConfiguration(fixedNodes, degree, fixedProtocol);
+            OutputOracle currOutputOracle = doForecast(currConf, sample);
+            result.put(currConf, currOutputOracle);
+         }
+         return result;
+      } catch (Exception e) {
+         log.error(e);
+         log.error(Arrays.toString(e.getStackTrace()));
+         return null;
       }
-      return result;
+
    }
 
    /**
@@ -224,11 +230,11 @@ public class OracleServiceImpl implements OracleService {
       AdaptationManagerConfig config = Config.getInstance();
       if (config.isWhatIfFixedDomain()) {
          log.trace("Fixed step whatif");
-         return fixedNodesRange(min, max, config.whatIfStep());
+         return fixedNodesRange(min, max, config.whatIfGranularity());
       }
       if (config.isWhatIfSamplingDomain()) {
          log.trace("Sampling step whatif");
-         return samplingNodesRange(min, max, config.whatIfSplit());
+         return samplingNodesRange(min, max, config.whatIfGranularity());
       }
       log.trace("All solutions whatif");
       return fixedNodesRange(min, max, 1);

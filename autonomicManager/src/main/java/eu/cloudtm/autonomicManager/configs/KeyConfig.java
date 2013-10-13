@@ -98,8 +98,6 @@ public enum KeyConfig {
 
    WHATIF_DOMAIN("whatif.domain"),
    WHATIF_GRANULARITY("whatif.granularity"),
-   WHATIF_STEP("whatif.step"),
-   WHATIF_SPLIT("whatit.split"),
 
    ENFORCE_STABILITY("reconfigurator.enforceStability"),
    STUB("forecaster.stub");
