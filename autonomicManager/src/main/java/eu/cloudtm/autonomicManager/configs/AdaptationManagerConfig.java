@@ -91,8 +91,28 @@ public class AdaptationManagerConfig extends PropertiesConfiguration {
       return isOracleService(OracleServiceEnum.FAKE);
    }
 
+   /**
+    * *********************** ORACLE SERVICE ************************
+    */
+
    private boolean isOracleService(OracleServiceEnum ose) {
       return OracleServiceEnum.valueOf(getString(KeyConfig.ORACLE_SERVICE.key())).equals(ose);
+   }
+
+   public int oracleServiceMinNodes() {
+      return getInt(KeyConfig.ORACLE_SERVICE_MIN_NODES.key());
+   }
+
+   public int oracleServiceMaxNodes() {
+      return getInt(KeyConfig.ORACLE_SERVICE_MAX_NODES.key());
+   }
+
+   public int oracleServiceMinRD() {
+      return getInt(KeyConfig.ORACLE_SERVICE_MIN_RD.key());
+   }
+
+   public int oracleServiceMaxRD() {
+      return getInt(KeyConfig.ORACLE_SERVICE_MAX_RD.key());
    }
 
    /**

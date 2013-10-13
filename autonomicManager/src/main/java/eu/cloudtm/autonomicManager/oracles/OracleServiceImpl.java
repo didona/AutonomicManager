@@ -3,6 +3,8 @@ package eu.cloudtm.autonomicManager.oracles;
 import eu.cloudtm.autonomicManager.commons.ForecastParam;
 import eu.cloudtm.autonomicManager.commons.PlatformConfiguration;
 import eu.cloudtm.autonomicManager.commons.ReplicationProtocol;
+import eu.cloudtm.autonomicManager.configs.AdaptationManagerConfig;
+import eu.cloudtm.autonomicManager.configs.Config;
 import eu.cloudtm.autonomicManager.debug.WPMInputOracleDumper;
 import eu.cloudtm.autonomicManager.oracles.exceptions.OracleException;
 import eu.cloudtm.autonomicManager.statistics.ProcessedSample;
@@ -21,24 +23,21 @@ import java.util.TreeMap;
 public class OracleServiceImpl implements OracleService {
 
    private static Log log = LogFactory.getLog(OracleServiceImpl.class);
-
    protected int nodesMin = 2, nodesMax = 10; // TODO: da rendere parametrizzabili
-
    protected int degreeMin = 2;
-
    private Oracle oracle;
-
    private boolean dump = false;
 
    public OracleServiceImpl(Oracle oracle) {
       this.oracle = oracle;
+      setMinMax();
    }
 
    public PlatformConfiguration minimizeCosts(ProcessedSample sample,
                                               double arrivalRateToGuarantee,
                                               double abortRateToGuarantee,
                                               double responseTimeToGuarantee)
-         throws OracleException {
+           throws OracleException {
 
       PlatformConfiguration configuration = exploreAllCases(sample, arrivalRateToGuarantee, abortRateToGuarantee, responseTimeToGuarantee);
       return configuration;
@@ -77,7 +76,6 @@ public class OracleServiceImpl implements OracleService {
       return finalConfiguration;
    }
 
-
    @Override
    public PlatformConfiguration maximizeThroughput(ProcessedSample sample) throws OracleException {
 
@@ -113,7 +111,6 @@ public class OracleServiceImpl implements OracleService {
       log.trace("Optimal configuration is " + finalConfiguration);
       return finalConfiguration;
    }
-
 
    /**
     * What-if with Protocols on X-axis
@@ -223,7 +220,6 @@ public class OracleServiceImpl implements OracleService {
       return result;
    }
 
-
    protected OutputOracle doForecast(PlatformConfiguration currConf, ProcessedSample sample) {
 
       Map<ForecastParam, Object> forecastParam = new HashMap<ForecastParam, Object>();
@@ -260,5 +256,10 @@ public class OracleServiceImpl implements OracleService {
       return currOutputOracle;
    }
 
-
+   private void setMinMax() {
+      AdaptationManagerConfig config = Config.getInstance();
+      this.nodesMin = config.oracleServiceMinNodes();
+      this.nodesMax = config.oracleServiceMaxNodes();
+      this.degreeMin = config.oracleServiceMinRD();
+   }
 }

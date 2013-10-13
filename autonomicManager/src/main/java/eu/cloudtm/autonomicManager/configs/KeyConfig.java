@@ -96,6 +96,10 @@ public enum KeyConfig {
    FILE_HOSTNAME("file.hostnames"),
 
    ORACLE_SERVICE("oracleService.default"),
+   ORACLE_SERVICE_MIN_NODES("oracleService.minNodes"),
+   ORACLE_SERVICE_MAX_NODES("oracleService.maxNodes"),
+   ORACLE_SERVICE_MIN_RD("oracleService.minRD"),
+   ORACLE_SERVICE_MAX_RD("oracleService.maxRD"),
 
    ENFORCE_STABILITY("reconfigurator.enforceStability"),
    STUB("forecaster.stub")
