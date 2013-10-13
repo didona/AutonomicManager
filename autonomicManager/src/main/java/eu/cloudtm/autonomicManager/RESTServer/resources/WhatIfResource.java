@@ -263,6 +263,8 @@ public class WhatIfResource extends AbstractResource {
       }
    }
 
+
+
    private ProcessedSample processedSampleFromStub() throws IOException {
       try {
          log.trace("Processing Sample from Stub");

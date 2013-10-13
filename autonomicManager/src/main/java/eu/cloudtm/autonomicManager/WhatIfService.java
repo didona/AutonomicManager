@@ -172,6 +172,7 @@ public class WhatIfService {
       log.trace("Custom params extracted");
 
       List<WhatIfDTO> result = new ArrayList<WhatIfDTO>();
+      List<prettyPrint> pretty = new ArrayList<prettyPrint>();
 
       for (Forecaster forecaster : customParamDTO.getForecasters()) {
          WhatIfDTO currWhatIfResult = new WhatIfDTO(forecaster, customParamDTO.getXaxis());
@@ -259,10 +260,17 @@ public class WhatIfService {
             currWhatIfResult.addReadResponseTimePoint(xaxis, currOut.responseTime(0));
             currWhatIfResult.addWriteResponseTimePoint(xaxis, currOut.responseTime(1));
             currWhatIfResult.addAbortRatePoint(xaxis, currOut.abortRate(1));
+            pretty.add(new prettyPrint(xaxis, currOut.throughput(0) + currOut.throughput(1), currOut.abortRate(1), currOut.responseTime(0), currOut.responseTime(1)));
          }
 
 
          result.add(currWhatIfResult);
+
+      }
+      if (log.isTraceEnabled()) {
+         for (prettyPrint p : pretty) {
+            log.trace(p.toString());
+         }
       }
       return result;
    }
@@ -312,6 +320,32 @@ public class WhatIfService {
       }
       log.trace("extractCustomEvaluatedParam has extracted " + customParam.size() + " params");
       return customParam;
+   }
+
+   private class prettyPrint {
+      private long nodes;
+      private double throughput;
+      private double abort;
+      private double readResponse;
+      private double writeResponse;
+
+      private prettyPrint(long nodes, double throughput, double abort, double readResponse, double writeResponse) {
+         this.nodes = nodes;
+         this.throughput = throughput;
+         this.abort = abort;
+         this.readResponse = readResponse;
+         this.writeResponse = writeResponse;
+      }
+
+      @Override
+      public String toString() {
+         return "[" + nodes +
+                 ", " + throughput +
+                 ", " + abort +
+                 ", " + readResponse +
+                 ", " + writeResponse +
+                 ']';
+      }
    }
 
 }
