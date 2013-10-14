@@ -24,7 +24,7 @@ var series = {
 				fill : true,
 			},
 			curvedLines: {
-				apply : true
+				apply : false
 			}
 		} ],
 		"abortRate" : [ {
@@ -39,7 +39,7 @@ var series = {
 				fill : true
 			},
 			curvedLines: {
-				apply : true
+				apply : false
 			}
 		} ],
 
@@ -49,7 +49,7 @@ var series = {
 				fill : true
 			},
 			curvedLines: {
-				apply : true
+				apply : false
 			}
 		} ]
 }
@@ -204,7 +204,7 @@ function serie(label,data)
 	this.label = label;
 	this.data = data;
 	this.lines = { fill : true, };
-	this.curvedLines = { apply : true };
+	this.curvedLines = { false : true };
 }
 
 function getAllAndUpdate() {
