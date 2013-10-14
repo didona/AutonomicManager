@@ -303,7 +303,7 @@ function drawPlots() {
 					xaxis : {
 						//min: 0,
 						//max: 5,
-						tickSize: 1,
+						tickSize: 5,
 						//tickFormatter : function(val, axis) {
 						//return val+1;
 						//}
