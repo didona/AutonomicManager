@@ -319,7 +319,7 @@ function drawPlots() {
 					},
 					series: {
 						curvedLines: {
-							active: true
+							active: false
 						}
 					}
 				});
