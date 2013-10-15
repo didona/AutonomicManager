@@ -201,7 +201,7 @@ function sendForecaster() {
 		data: dataToBeSent,	
 
 		success: function(data) {	        
-	        alert('ok!');
+	        alert('Operation successfully performed');
 	    },
 		error: function(xhr, status) {
 			console.log(xhr);
@@ -235,7 +235,7 @@ function sendScale() {
 		data: dataToBeSent,	
 
 		success: function(data) {	        
-	        alert('ok! ' + data);
+	        alert('Platform successfully re-sized');
 	    },
 		error: function(xhr, status) {
 			console.log(xhr);
@@ -276,7 +276,7 @@ function sendDegree() {
 		data: dataToBeSent,	
 
 		success: function(data) {	        
-	        alert('ok! ' + data);
+	        alert('Replication degree successfully modified');
 	    },
 		error: function(xhr, status) {
 			console.log(xhr);
@@ -300,7 +300,7 @@ function sendProtocol() {
 		data: dataToBeSent,	
 
 		success: function(data) {	        
-	        alert('ok! ' + data);
+	        alert('Protocol successfully switched');
 	    },
 		error: function(xhr, status) {
 			console.log(xhr);
