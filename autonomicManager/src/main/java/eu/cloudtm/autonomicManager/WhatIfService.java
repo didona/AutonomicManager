@@ -112,7 +112,7 @@ public class WhatIfService {
          customParam.setLocalUpdateTxLocalServiceTime(0.0);
       }
 
-      Object localReadOnlyTxLocalServiceTime = processedSample.getParam(Param.LocalReadOnlyTxLocalServiceTime);
+      Object localReadOnlyTxLocalServiceTime = processedSample.getParam(Param.ReadOnlyTxTotalCpuTime);
       if (localReadOnlyTxLocalServiceTime != null) {
 
          double val = ((Number) localReadOnlyTxLocalServiceTime).doubleValue();
@@ -321,7 +321,7 @@ public class WhatIfService {
 
          if (trace)
             log.trace("Extracting LocalReadOnlyTxLocalServiceTime, whatIfCustomParam contains: " + whatIfCustomParam.getLocalReadOnlyTxLocalServiceTime());
-         customParam.put(Param.LocalReadOnlyTxLocalServiceTime, whatIfCustomParam.getLocalReadOnlyTxLocalServiceTime());
+         customParam.put(Param.ReadOnlyTxTotalCpuTime, whatIfCustomParam.getLocalReadOnlyTxLocalServiceTime());
       }
       if (trace) log.trace("extractCustomParam has extracted " + customParam.size() + " params");
       return customParam;

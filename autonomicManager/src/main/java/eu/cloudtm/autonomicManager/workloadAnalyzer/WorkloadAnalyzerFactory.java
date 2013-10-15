@@ -19,13 +19,6 @@ import java.util.Map;
 public class WorkloadAnalyzerFactory {
 
    private static Log log = LogFactory.getLog(WorkloadAnalyzerFactory.class);
-
-   private double delta = Config.getInstance().getDouble(KeyConfig.CHANGE_DETECTOR_DELTA.key());
-
-   private SampleProducer statsManager;
-   private Reconfigurator reconfigurator;
-   private Optimizer optimizer;
-
    Map<Param, Double> param2delta = new HashMap<Param, Double>() {{
       log.warn("TODO read params from config file");
 
@@ -40,7 +33,7 @@ public class WorkloadAnalyzerFactory {
       put(Param.LocalUpdateTxLocalServiceTime, delta);
 
       log.trace("Param.LocalReadOnlyTxLocalServiceTime, " + delta);
-      put(Param.LocalReadOnlyTxLocalServiceTime, delta);
+      put(Param.ReadOnlyTxTotalCpuTime, delta);
 
       log.trace("Param.AvgGetsPerWrTransaction, " + delta);
       put(Param.AvgGetsPerWrTransaction, delta);
@@ -48,11 +41,14 @@ public class WorkloadAnalyzerFactory {
       log.trace("Param.AvgGetsPerROTransaction, " + delta);
       put(Param.AvgGetsPerROTransaction, delta);
    }};
-
    Map<EvaluatedParam, Double> evaluatedParam2delta = new HashMap<EvaluatedParam, Double>() {{
       log.trace("Param.ACF, " + delta);
       put(EvaluatedParam.ACF, delta);
    }};
+   private double delta = Config.getInstance().getDouble(KeyConfig.CHANGE_DETECTOR_DELTA.key());
+   private SampleProducer statsManager;
+   private Reconfigurator reconfigurator;
+   private Optimizer optimizer;
 
    public WorkloadAnalyzerFactory(SampleProducer statsManager,
                                   Reconfigurator reconfigurator,
@@ -66,8 +62,8 @@ public class WorkloadAnalyzerFactory {
    public WorkloadAnalyzer build() {
 
       WorkloadForecaster workloadForecaster = new WorkloadForecaster(
-            param2delta.keySet(),
-            evaluatedParam2delta.keySet()
+              param2delta.keySet(),
+              evaluatedParam2delta.keySet()
       );
 
       AbstractChangeDetector proactiveChangeDetector = buildProactiveChangeDetector(workloadForecaster);
@@ -99,14 +95,13 @@ public class WorkloadAnalyzerFactory {
       boolean enabled = Config.getInstance().getBoolean(KeyConfig.WORKLOAD_ANALYZER_AUTOSTART.key());
 
       WorkloadAnalyzer workloadAnalyzer = new WorkloadAnalyzer(enabled,
-                                                               statsManager,
-                                                               reactiveChangeDetector,
-                                                               proactiveChangeDetector,
-                                                               alertManager);
+              statsManager,
+              reactiveChangeDetector,
+              proactiveChangeDetector,
+              alertManager);
 
       return workloadAnalyzer;
    }
-
 
    private AbstractChangeDetector buildReactiveChangeDetector() {
       if (Config.getInstance().isAlertManagerPolicyPureReactive() || Config.getInstance().isAlertManagerPolicyMix()) {
