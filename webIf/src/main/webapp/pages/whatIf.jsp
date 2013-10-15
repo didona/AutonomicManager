@@ -194,10 +194,11 @@
 												<input type="checkbox" name="oracoles" value="MACHINE_LEARNING" />
 												<label>Machine Learning</label>
 											</div>
-											
+											<!-- UNCOMMENT TO HAVE COMMITEE BACK
 											<div>											
 												<input type="checkbox" name="oracoles" value="COMMITTEE" />
 												<label>Committee</label>
+												-->
 											</div>	
 										</fieldset>										
 									</div>
