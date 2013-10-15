@@ -2,6 +2,8 @@ package eu.cloudtm.autonomicManager.RESTServer;
 
 import eu.cloudtm.autonomicManager.AutonomicManager;
 import eu.cloudtm.autonomicManager.ControllerLogger;
+import eu.cloudtm.autonomicManager.configs.AdaptationManagerConfig;
+import eu.cloudtm.autonomicManager.configs.Config;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -14,15 +16,19 @@ import java.net.URI;
  */
 public class RESTServer {
 
-   // Base URI the Grizzly HTTP server will listen on
-   public static final String BASE_URI = "http://0.0.0.0:1515/";
-
    private final ResourceConfig rc;
-
+   // Base URI the Grizzly HTTP server will listen on
+   private String BASE_URI = "http://0.0.0.0:1515/";
    private HttpServer httpServer;
 
    public RESTServer(AutonomicManager autonomicManager) {
+      AdaptationManagerConfig config = Config.getInstance();
+      BASE_URI = address(config.restIp(), config.restPort());
       rc = new RESTApplication(autonomicManager);
+   }
+
+   private String address(String ip, String port) {
+      return "http://" + ip + ":" + port + "/";
    }
 
    /**

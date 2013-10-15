@@ -160,5 +160,17 @@ public class AdaptationManagerConfig extends PropertiesConfiguration {
       return getInt(KeyConfig.WHATIF_GRANULARITY.key());
    }
 
+   /**
+    * *********************** REST SERVER ************************
+    */
+
+   public String restIp() {
+      return getString(KeyConfig.REST_ADDRESS.key());
+   }
+
+   public String restPort() {
+      return getString(KeyConfig.REST_PORT.key());
+   }
+
 
 }

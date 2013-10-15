@@ -100,7 +100,11 @@ public enum KeyConfig {
    WHATIF_GRANULARITY("whatif.granularity"),
 
    ENFORCE_STABILITY("reconfigurator.enforceStability"),
-   STUB("forecaster.stub");
+   STUB("forecaster.stub"),
+
+   REST_ADDRESS("rest.address"),
+   REST_PORT("rest.port")
+   ;
    private final String key;
 
    private KeyConfig(String key) {
