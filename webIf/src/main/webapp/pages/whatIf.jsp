@@ -198,8 +198,8 @@
 											<div>											
 												<input type="checkbox" name="oracoles" value="COMMITTEE" />
 												<label>Committee</label>
+											</div>
 												-->
-											</div>	
 										</fieldset>										
 									</div>
 									
