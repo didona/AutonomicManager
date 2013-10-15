@@ -4,6 +4,8 @@ import eu.cloudtm.autonomicManager.AutonomicManager;
 import eu.cloudtm.autonomicManager.ControllerLogger;
 import eu.cloudtm.autonomicManager.configs.AdaptationManagerConfig;
 import eu.cloudtm.autonomicManager.configs.Config;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -16,6 +18,7 @@ import java.net.URI;
  */
 public class RESTServer {
 
+   private final static Log log = LogFactory.getLog(RESTServer.class);
    private final ResourceConfig rc;
    // Base URI the Grizzly HTTP server will listen on
    private String BASE_URI = "http://0.0.0.0:1515/";
@@ -28,7 +31,12 @@ public class RESTServer {
    }
 
    private String address(String ip, String port) {
-      return "http://" + ip + ":" + port + "/";
+      String s = BASE_URI;
+      if (ip != null && port != null) {
+         s = "http://" + ip + ":" + port + "/";
+      }
+      log.warn("Binding to " + s);
+      return s;
    }
 
    /**
