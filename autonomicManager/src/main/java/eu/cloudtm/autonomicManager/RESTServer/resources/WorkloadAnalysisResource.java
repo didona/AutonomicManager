@@ -39,7 +39,8 @@ public class WorkloadAnalysisResource extends AbstractResource {
          top = top.subTopKeySample(TopKeyParam.REMOTE_GET, TopKeyParam.REMOTE_PUT, TopKeyParam.FAILED);
       else {
          log.trace("Null top k sample");
-         return null;
+         //return null;
+         throw new IllegalArgumentException("Null top k sample");
       }
       log.info("TopSample " + top);
       String json = gson.toJson(top);
