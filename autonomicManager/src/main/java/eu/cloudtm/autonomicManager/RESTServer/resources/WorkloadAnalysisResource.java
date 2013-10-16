@@ -34,18 +34,19 @@ public class WorkloadAnalysisResource extends AbstractResource {
 
       log.info("Requesting top K");
       Gson gson = new Gson();
-
-      TopKeySample s = statsManager.getLastTopKSample().subTopKeySample(TopKeyParam.REMOTE_GET, TopKeyParam.REMOTE_PUT, TopKeyParam.FAILED);
-      log.info("TopSample " + s);
-      String json = gson.toJson(s);
+      TopKeySample top = statsManager.getLastTopKSample();
+      if (top != null)
+         top = top.subTopKeySample(TopKeyParam.REMOTE_GET, TopKeyParam.REMOTE_PUT, TopKeyParam.FAILED);
+      else {
+         log.trace("Null top k sample");
+         return null;
+      }
+      log.info("TopSample " + top);
+      String json = gson.toJson(top);
       log.info("platformConfigurationPredicted: " + json);
       Response.ResponseBuilder builder = Response.ok(json);
       return makeCORS(builder);
    }
-
-
-
-
 
 
 }
