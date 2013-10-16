@@ -1,6 +1,7 @@
 package eu.cloudtm.autonomicManager.statistics.samples;
 
 
+import eu.cloudtm.autonomicManager.commons.Param;
 import eu.cloudtm.autonomicManager.statistics.ProcessedSample;
 import eu.cloudtm.autonomicManager.statistics.Sample;
 
@@ -38,7 +39,7 @@ public class TWOPCProcessedSample extends ProcessedSample {
       Random rnd = new Random();
 
       //return rnd.nextDouble();
-      return 0.0D;
+      return 1.0D/((Number)getParam(Param.NumberOfEntries)).doubleValue();
    }
 
 }

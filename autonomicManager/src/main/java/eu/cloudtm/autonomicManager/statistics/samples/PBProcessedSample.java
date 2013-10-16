@@ -1,5 +1,6 @@
 package eu.cloudtm.autonomicManager.statistics.samples;
 
+import eu.cloudtm.autonomicManager.commons.Param;
 import eu.cloudtm.autonomicManager.statistics.ProcessedSample;
 import eu.cloudtm.autonomicManager.statistics.Sample;
 
@@ -16,6 +17,6 @@ public class PBProcessedSample extends ProcessedSample {
 
    @Override
    protected Double getACF() {
-      return 0.0D;  // TODO: Customise this generated block
+      return 1.0D/((Number)getParam(Param.NumberOfEntries)).doubleValue() * 10;
    }
 }
