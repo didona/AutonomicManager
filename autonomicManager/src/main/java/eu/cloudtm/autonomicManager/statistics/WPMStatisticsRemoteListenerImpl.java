@@ -7,11 +7,7 @@ import eu.cloudtm.autonomicManager.statistics.topKeys.TopKeyNodeBucketImpl;
 import eu.cloudtm.autonomicManager.statistics.topKeys.TopKeySample;
 import eu.cloudtm.autonomicManager.statistics.topKeys.TopKeySampleImpl;
 import eu.cloudtm.wpm.connector.WPMConnector;
-import eu.cloudtm.wpm.logService.remote.events.PublishAggregatedStatisticsEvent;
-import eu.cloudtm.wpm.logService.remote.events.PublishAttribute;
-import eu.cloudtm.wpm.logService.remote.events.PublishMeasurement;
-import eu.cloudtm.wpm.logService.remote.events.PublishStatisticsEvent;
-import eu.cloudtm.wpm.logService.remote.events.SubscribeEvent;
+import eu.cloudtm.wpm.logService.remote.events.*;
 import eu.cloudtm.wpm.logService.remote.listeners.WPMStatisticsRemoteListener;
 import eu.cloudtm.wpm.logService.remote.observables.Handle;
 import eu.cloudtm.wpm.parser.ResourceType;
@@ -262,23 +258,28 @@ public class WPMStatisticsRemoteListenerImpl implements WPMStatisticsRemoteListe
 
    //Apparently,this method depends on the application. It should be refactored and made pluggable through an object
    private Map<String, Long> fenixMapFromString(String s) {
+      try {
+         s = s.substring(1);
+         log.trace("TOMAP " + s);
+         String[] eq;
+         String temp1, temp2;
+         String[] split = s.split("\\|");
+         log.trace(Arrays.toString(split));
+         Map<String, Long> map = new HashMap<String, Long>();
 
-      s = s.substring(1);
-      log.trace("TOMAP " + s);
-      String[] eq;
-      String temp1, temp2;
-      String[] split = s.split("\\|");
-      log.trace(Arrays.toString(split));
-      Map<String, Long> map = new HashMap<String, Long>();
-
-      for (int i = 0; i < split.length; ) {
-         temp1 = split[i++];
-         eq = split[i++].split("=");
-         temp1 = temp1.concat("\\|").concat(eq[0]);
-         map.put(temp1, Long.parseLong(eq[1]));
-         log.trace("ADDING " + temp1 + " - " + Long.parseLong(eq[1]));
+         for (int i = 0; i < split.length; ) {
+            temp1 = split[i++];
+            eq = split[i++].split("=");
+            temp1 = temp1.concat("\\|").concat(eq[0]);
+            map.put(temp1, Long.parseLong(eq[1]));
+            log.trace("ADDING " + temp1 + " - " + Long.parseLong(eq[1]));
+         }
+         return map;
+      } catch (Exception e) {
+         log.error(">>" + e + "<<");
+         log.error(Arrays.toString(e.getStackTrace()));
+         return null;
       }
-      return map;
    }
 
 }
