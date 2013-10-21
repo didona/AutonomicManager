@@ -173,4 +173,12 @@ public class AdaptationManagerConfig extends PropertiesConfiguration {
    }
 
 
+
+   /**
+    * *********************** ACTUATORS ************************
+    */
+   public String getFutureGridUsername(){
+      return getString( KeyConfig.FUTUREGRID_USERNAME.key() );
+   }
+
 }
