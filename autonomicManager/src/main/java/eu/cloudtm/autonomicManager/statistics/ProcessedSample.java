@@ -22,12 +22,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class ProcessedSample implements Sample {
 
    private static Log log = LogFactory.getLog(ProcessedSample.class);
-
    protected Sample sample;
-
    private AtomicBoolean initialized = new AtomicBoolean(false);
-
    private Map<EvaluatedParam, Object> evaluatedParams = new HashMap<EvaluatedParam, Object>();
+
+   public ProcessedSample(Sample sample) {
+      this.sample = sample;
+   }
 
    public Map<EvaluatedParam, Object> getEvaluatedParams() {
       if (initialized.compareAndSet(false, true)) {
@@ -38,10 +39,6 @@ public abstract class ProcessedSample implements Sample {
 
    public Sample getInnerSample() {
       return this.sample;
-   }
-
-   public ProcessedSample(Sample sample) {
-      this.sample = sample;
    }
 
    @Override
@@ -72,7 +69,6 @@ public abstract class ProcessedSample implements Sample {
    public Map<String, Object> getParams() {
       return sample.getParams();
    }
-
 
    public synchronized Object getEvaluatedParam(EvaluatedParam param) {
       if (initialized.compareAndSet(false, true)) {
@@ -108,7 +104,6 @@ public abstract class ProcessedSample implements Sample {
       int maxActiveThreads = Config.getInstance().getInt(KeyConfig.ENVIRONMENT_MAX_ACTIVE_THREADS_PER_NODE.key());
       return maxActiveThreads;
    }
-
 
    protected final SystemType getSystemType() {
       String systemTypeStr = Config.getInstance().getString(KeyConfig.ENVIRONMENT_SYSTEM_TYPE.key());

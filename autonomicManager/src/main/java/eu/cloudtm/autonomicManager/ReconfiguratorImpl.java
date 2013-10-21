@@ -296,25 +296,7 @@ public class ReconfiguratorImpl implements Reconfigurator {
    }
 
    private boolean forceSkipReconfiguration(PlatformConfiguration from, PlatformConfiguration to, ReconfigurationParam param) {
-      log.trace("Force skip?");
-      if (!param.isAutoTuning()) {
-         log.trace("Autotuning is FALSE, thus NOT forcing skip");
-         return false;
-      }
-      if (Config.getInstance().enforceStability()) {
-         log.trace("Enforcing stability");
-         ReplicationProtocol fromRP = from.replicationProtocol(), toRP = to.replicationProtocol();
-         boolean allowedSwitch = (fromRP == ReplicationProtocol.TWOPC && toRP == ReplicationProtocol.PB) ||
-                 (fromRP == ReplicationProtocol.PB && toRP == ReplicationProtocol.TO);
-         if (allowedSwitch) {
-            log.trace("Switch allowed " + from + " to " + to);
-         } else {
-            log.trace("Switch not allowed " + from + " to " + to);
-         }
-         return !allowedSwitch;
-      }
-      log.trace("Not enforcing stability->not skipping");
-      return false;
+     return false;
    }
 
 }

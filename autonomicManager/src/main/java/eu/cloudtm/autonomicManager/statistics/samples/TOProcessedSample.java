@@ -16,8 +16,8 @@ public class TOProcessedSample extends ProcessedSample {
       super(sample);
    }
 
+   //TODO: wire this
    @Override
-
    protected Double getACF() {
       return 1.0D / ((Number) getParam(Param.NumberOfEntries)).doubleValue() * 5;
    }
