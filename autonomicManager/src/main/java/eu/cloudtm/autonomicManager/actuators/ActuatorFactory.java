@@ -3,6 +3,7 @@ package eu.cloudtm.autonomicManager.actuators;
 import eu.cloudtm.autonomicManager.Actuator;
 import eu.cloudtm.autonomicManager.actuators.clients.ApplicationClient;
 import eu.cloudtm.autonomicManager.actuators.clients.RadargunClientJMX;
+import eu.cloudtm.autonomicManager.configs.AdaptationManagerConfig;
 import eu.cloudtm.autonomicManager.configs.Config;
 import eu.cloudtm.autonomicManager.configs.KeyConfig;
 import org.apache.commons.logging.Log;
@@ -65,7 +66,7 @@ public class ActuatorFactory {
       log.info("Creating FutureGrid actuator...");
       // todo add choise Radargun or Geograph
       ApplicationClient applicationClient = createRadargunClient();
-      Actuator futureGridActuator = new FutureGridActuator( applicationClient, jmxPort, domain, cacheName, availableMachines(), initMachinesUp() ); // with radargun
+      Actuator futureGridActuator = new FutureGridActuator(applicationClient, jmxPort, domain, cacheName, availableMachines(), initMachinesUp()); // with radargun
       return futureGridActuator;
    }
 
